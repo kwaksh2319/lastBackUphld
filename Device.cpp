@@ -1,6 +1,7 @@
+#include"stdafx.h"
 #include "Device.h"
 
-int APIENTRY WinMain(HINSTANCE hinstance, HINSTANCE  previntance, LPSTR IpCmdLine, int mCmdShow) {
+int APIENTRY WinMain(HINSTANCE hinstance, HINSTANCE  previntance, LPSTR IpCmdLine, int mCmdShow) { //main
 	InitWidow(hinstance, mCmdShow);
 	InitDircet3D(hinstance);
 	Running();
@@ -13,10 +14,10 @@ wstring Title = L"D2D GAME";
 
 //i-interface 
 //swapchain back buffer °ü¸® 
-IDXGISwapChain* SwapChain;//back buffer mangement
+IDXGISwapChain* SwapChain; //back buffer mangement
 ID3D11Device* Device; //setting
 ID3D11DeviceContext* DeviceContext; //setting input
-ID3D11RenderTargetView* RTV;//page? display
+ID3D11RenderTargetView* RTV; //page? display
 
 
 //shader load
@@ -24,6 +25,8 @@ ID3D11VertexShader* VertexShader;
 ID3D11PixelShader* PixelShader; 
 ID3D10Blob* VsBlob;
 ID3D10Blob* PsBlob;
+
+Keyboard* key;
 
 
 void InitWidow(HINSTANCE hinstance, int nCMdShow)
@@ -247,11 +250,13 @@ WPARAM Running()
 {
 	MSG msg;
 	ZeroMemory(&msg, sizeof(MSG));
+	key = new Keyboard;
 	InitScene();
 	////////////////////////////
 	while (true) {
 
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)){
+
 		 if (msg.message == WM_QUIT)break;
 		   TranslateMessage(&msg);
 		     DispatchMessage(&msg);
@@ -265,6 +270,7 @@ WPARAM Running()
 
 	///////////////////////////
 	DestoryScene();
+	delete key;
 	return msg.wParam;
 }
 

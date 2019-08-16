@@ -3,11 +3,24 @@
   <ItemGroup>
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="scen.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="System\Keyboard.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Device.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="System\Keyboard.h">
+      <Filter>System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Effect.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="System">
+      <UniqueIdentifier>{ddfd74f1-5938-4ade-b12a-102006c79d28}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>
