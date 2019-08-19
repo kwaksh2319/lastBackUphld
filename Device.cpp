@@ -33,6 +33,7 @@ void InitWidow(HINSTANCE hinstance, int nCMdShow)
 {
 	//RegisterWindow
 	{   //window api
+		srand(time(NULL));//random 타이머 시드 
 		WNDCLASSEX wc;
 		wc.cbSize = sizeof(WNDCLASSEX);
 		wc.style = CS_HREDRAW | CS_VREDRAW; //r가로 세로 그려주기
