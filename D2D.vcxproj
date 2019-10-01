@@ -80,8 +80,11 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories>./;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./;./_Libraries</AdditionalIncludeDirectories>
     </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>./_Libraries</AdditionalLibraryDirectories>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -120,20 +123,83 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Device.cpp" />
-    <ClCompile Include="scen.cpp" />
+    <ClCompile Include="Object\Bullet.cpp" />
+    <ClCompile Include="Object\Fire.cpp" />
+    <ClCompile Include="Object\Marker.cpp" />
+    <ClCompile Include="Object\Player.cpp" />
+    <ClCompile Include="Object\Ring.cpp" />
+    <ClCompile Include="Render\Animation.cpp" />
+    <ClCompile Include="Render\Clip.cpp" />
+    <ClCompile Include="Render\LIne.cpp" />
+    <ClCompile Include="Render\Rect.cpp" />
+    <ClCompile Include="Render\Shader.cpp" />
+    <ClCompile Include="Render\Sprite.cpp" />
+    <ClCompile Include="Program.cpp" />
+    <ClCompile Include="Scenes\LineTest.cpp" />
+    <ClCompile Include="Scenes\MarkingTest.cpp" />
+    <ClCompile Include="Scenes\Stage1.cpp" />
+    <ClCompile Include="Scenes\Stage2.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="System\CMouse.cpp" />
+    <ClCompile Include="System\Device.cpp" />
+    <ClCompile Include="System\Dwrite.cpp" />
+    <ClCompile Include="System\FileManger.cpp" />
     <ClCompile Include="System\Keyboard.cpp" />
+    <ClCompile Include="System\SoundManager.cpp" />
+    <ClCompile Include="System\Time.cpp" />
+    <ClCompile Include="Utility\BinaryFile.cpp" />
+    <ClCompile Include="Utility\Math.cpp" />
+    <ClCompile Include="Utility\Path.cpp" />
+    <ClCompile Include="Utility\String.cpp" />
+    <ClCompile Include="Utility\Xml.cpp" />
+    <ClCompile Include="Viewer\Camera.cpp" />
+    <ClCompile Include="Viewer\Following.cpp" />
+    <ClCompile Include="Viewer\FreeCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Device.h" />
+    <ClInclude Include="Object\Bullet.h" />
+    <ClInclude Include="Object\Fire.h" />
+    <ClInclude Include="Object\Marker.h" />
+    <ClInclude Include="Object\Player.h" />
+    <ClInclude Include="Object\Ring.h" />
+    <ClInclude Include="Render\Animation.h" />
+    <ClInclude Include="Render\Clip.h" />
+    <ClInclude Include="Render\Line.h" />
+    <ClInclude Include="Render\Rect.h" />
+    <ClInclude Include="Render\Shader.h" />
+    <ClInclude Include="Render\Sprite.h" />
+    <ClInclude Include="Scenes\LineTest.h" />
+    <ClInclude Include="Scenes\MarkingTest.h" />
+    <ClInclude Include="Scenes\Scene.h" />
+    <ClInclude Include="Scenes\Stage1.h" />
+    <ClInclude Include="Scenes\Stage2.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="System\CMouse.h" />
+    <ClInclude Include="System\Device.h" />
+    <ClInclude Include="System\Dwrite.h" />
+    <ClInclude Include="System\FileManger.h" />
     <ClInclude Include="System\Keyboard.h" />
+    <ClInclude Include="System\SoundManager.h" />
+    <ClInclude Include="System\Time.h" />
+    <ClInclude Include="Utility\BinaryFile.h" />
+    <ClInclude Include="Utility\Math.h" />
+    <ClInclude Include="Utility\Path.h" />
+    <ClInclude Include="Utility\String.h" />
+    <ClInclude Include="Utility\Xml.h" />
+    <ClInclude Include="Viewer\Camera.h" />
+    <ClInclude Include="Viewer\Following.h" />
+    <ClInclude Include="Viewer\FreeCamera.h" />
+    <ClInclude Include="Viewer\IFollow.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Effect.hlsl">
+    <None Include="_Shader2D\Effect.fx">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="_Shader2D\Bounding.fx">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

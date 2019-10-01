@@ -1,12 +1,12 @@
-#include"stdafx.h"
-#include"Keyboard.h"
+#include "stdafx.h"
+#include "Keyboard.h"
 
 Keyboard::Keyboard()
 {
-	for (int i = 0; i < KEYMAX; i++) {
-		up.set(i,false);
+	for (int i = 0; i < KEYMAX; i++)
+	{
+		up.set(i, false);
 		down.set(i, false);
-
 	}
 }
 
@@ -16,35 +16,37 @@ Keyboard::~Keyboard()
 
 bool Keyboard::Down(int key)
 {
-
-	//눌린 키를 받아옴 (ASCII)
-	if (GetAsyncKeyState(key) & 0x8000) {
-		//first press
-		if (down[key] = false) {
+	//눌린 키를 받아옴(ASCII)
+	if (GetAsyncKeyState(key) & 0x8000)
+	{
+		//처음 눌렸을 경우
+		if (down[key] == false)
+		{
 			down.set(key, true);
 			return true;
 		}
 	}
-	else {
+	else
+	{
 		down.set(key, false);
 	}
-
 
 	return false;
 }
 
 bool Keyboard::Up(int key)
 {
-	if (GetAsyncKeyState(key) & 0x8000) {
+	if (GetAsyncKeyState(key) & 0x8000)
+	{
 		up.set(key, true);
-
 	}
-	else {
-		if (up[key] == true) {
+	else
+	{
+		if (up[key] == true)
+		{
 			up.set(key, false);
 			return true;
 		}
-
 	}
 
 	return false;
@@ -52,18 +54,16 @@ bool Keyboard::Up(int key)
 
 bool Keyboard::Press(int key)
 {
-	if(GetAsyncKeyState(key) &0x8000){
-	     	return true;
-	}
+	if (GetAsyncKeyState(key) & 0x8000)
+		return true;
 
 	return false;
 }
 
 bool Keyboard::Toggle(int key)
 {
-	if (GetAsyncKeyState(key) & 0x0001){
-		     return true;
-	}
+	if (GetAsyncKeyState(key) & 0x0001)
+		return true;
 
 	return false;
 }
