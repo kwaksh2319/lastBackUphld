@@ -12,6 +12,8 @@ private:
 	D3DXVECTOR2 _leftPoint;
 	D3DXVECTOR2 _rightPoint;
 
+	float slope;
+
 private:
 	bool bDrawCollision;
 	bool bVisivle;
@@ -38,6 +40,7 @@ public:
 	void RightPoint(D3DXVECTOR2 val) { _rightPoint = val; }
 	D3DXVECTOR2 LeftPoint() { return _leftPoint; }
 	D3DXVECTOR2 RightPoint() { return _rightPoint; }
+	float Slope() { return slope; }
 
 	void DrawCollision(bool val) { bDrawCollision = val; }
 	void Visible(bool val) { bVisivle = val; }

@@ -64,4 +64,6 @@ public:
 	void DrawBound(bool val);
 
 	Sprite* GetSprite();
+
+	bool EndFrame() { return !bPlay; }
 };

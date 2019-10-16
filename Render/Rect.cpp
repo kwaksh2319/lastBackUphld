@@ -5,16 +5,18 @@ Rect::Rect(wstring shaderFile)
 	:position(0, 0), scale(1, 1), color(0, 0, 0, 1)
 {
 	CreateBuffer(shaderFile);
-	UpdateWorld();
+	
 	Color(color);
 }
 
 
-Rect::Rect(wstring shaderFile, D3DXVECTOR2 position, D3DXVECTOR2 scale, D3DXCOLOR color)
+Rect::Rect(wstring shaderFile, D3DXVECTOR2 position, D3DXVECTOR2 scale, D3DXCOLOR color )
 	: position(position), scale(scale), color(color)
 {
+	
+	
 	CreateBuffer(shaderFile);
-	UpdateWorld();
+	
 	Color(color);
 }
 
@@ -26,8 +28,22 @@ Rect::~Rect()
 
 void Rect::Update(D3DXMATRIX & V, D3DXMATRIX & P)
 {
+
+	D3DXMATRIX W;
+	D3DXMATRIX S, T;
+
+	
+
+	D3DXMatrixScaling(&S, scale.x, scale.y, 1.0f);
+	D3DXMatrixTranslation(&T, position.x, position.y, 0.0f);
+
+	W = S * T;
+
+	shader->AsMatrix("World")->SetMatrix(W);
 	shader->AsMatrix("View")->SetMatrix(V);
 	shader->AsMatrix("Projection")->SetMatrix(P);
+
+	shader->AsVector("Color")->SetFloatVector(color);
 
 }
 
@@ -54,7 +70,7 @@ void Rect::Position(float x, float y)
 void Rect::Position(D3DXVECTOR2& vec)
 {
 	position = vec;
-	UpdateWorld();
+	
 }
 
 void Rect::Scale(float x, float y)
@@ -66,12 +82,12 @@ void Rect::Scale(float x, float y)
 void Rect::Scale(D3DXVECTOR2 & vec)
 {
 	scale = vec;
-	UpdateWorld();
+
 }
 
 void Rect::Color(float r, float g, float b)
 {
-	D3DXCOLOR input = D3DXCOLOR(r, g, b, 1);
+	D3DXCOLOR input = D3DXCOLOR(r, g, b, 0.5f);
 	Color(input);
 }
 
@@ -79,6 +95,26 @@ void Rect::Color(D3DXCOLOR & vec)
 {
 	color = vec;
 	shader->AsVector("Color")->SetFloatVector(color);
+}
+
+bool Rect::PtInRect(const Rect * rect, D3DXVECTOR2 ptMouse)
+{
+	float xScale = rect->scale.x*0.5f;
+	float yScale = rect->scale.y*0.5f;
+
+	float left = rect->position.x - xScale;
+	float right = rect->position.x + xScale;
+	float bottom = rect->position.y - yScale;
+	float top = rect->position.y + yScale;
+
+	bool bCheck = true;
+
+	bCheck &= ptMouse.x > left;
+	bCheck &= ptMouse.x <= right;
+	bCheck &= ptMouse.y > bottom;
+	bCheck &= ptMouse.y <= top;
+
+	return bCheck;
 }
 
 
@@ -113,15 +149,3 @@ void Rect::CreateBuffer(wstring shaderFile)
 
 }
 
-void Rect::UpdateWorld()
-{
-	D3DXMATRIX W;
-	D3DXMATRIX S, T;
-
-	D3DXMatrixScaling(&S, scale.x, scale.y, 1.0f);
-	D3DXMatrixTranslation(&T, position.x, position.y, 0.0f);
-
-	W = S * T;
-
-	shader->AsMatrix("World")->SetMatrix(W);
-}

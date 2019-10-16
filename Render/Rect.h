@@ -20,14 +20,14 @@ private:
 
 private:
 	void CreateBuffer(wstring shaderFile);
-	void UpdateWorld();
+	
 
 public:
 	Rect(wstring shaderFile);
-	Rect(wstring shaderFile, D3DXVECTOR2 position, D3DXVECTOR2 scale, D3DXCOLOR color = D3DXCOLOR(1, 1, 1, 1));
-	virtual ~Rect();
+	Rect(wstring shaderFile, D3DXVECTOR2 position, D3DXVECTOR2 scale, D3DXCOLOR color = D3DXCOLOR(0xaa000000));
+	 ~Rect();
 
-	virtual void Update(D3DXMATRIX& V, D3DXMATRIX& P); //overide
+	void Update(D3DXMATRIX& V, D3DXMATRIX& P); //overide
 	void Render();
 
 	
@@ -45,4 +45,5 @@ public:
 	void Color(D3DXCOLOR& vec);
 	D3DXCOLOR Color() { return color; }
 
+	static bool PtInRect(const Rect* rect, D3DXVECTOR2 ptMouse);
 };

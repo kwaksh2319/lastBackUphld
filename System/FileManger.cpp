@@ -3,8 +3,8 @@
 #include<algorithm>
 
 
-vector<D3DXVECTOR2>FileManger::markers;// = { D3DXVECTOR2(0.0f, 0.0f) };
-vector<pair<D3DXVECTOR2, D3DXVECTOR2>>FileManger::markers2;// = { pair<D3DXVECTOR2,D3DXVECTOR2>(D3DXVECTOR2(0.0f,0.0f),D3DXVECTOR2(0.0f,0.0f)) };
+vector<D3DXVECTOR2>FileManger::markers = { D3DXVECTOR2(0.0f, 0.0f) };
+vector<pair<D3DXVECTOR2, D3DXVECTOR2>>FileManger::markers2 = { pair<D3DXVECTOR2,D3DXVECTOR2>(D3DXVECTOR2(0.0f,0.0f),D3DXVECTOR2(0.0f,0.0f)) };
 
 void FileManger::Save(wstring filename)
 {

@@ -53,6 +53,7 @@ using namespace std;
 
 
 #include "./Render/Shader.h"
+#include"./Render/Rect.h"
 #include "./Utility/String.h"
 #include"./Utility/Math.h"
 #include"./Utility/BinaryFile.h"

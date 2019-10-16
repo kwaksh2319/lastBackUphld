@@ -41,5 +41,7 @@ public:
 	void DrawBound(bool val);
 	Clip* GetClip();
 	Sprite* GetSprite();
+	int GetCurrentClip() { return currentClip; }
+
 
 };

@@ -1,0 +1,96 @@
+Clip* clip;
+	//Idle(0 ~ 1)
+	{
+		clip = new Clip(PlayMode::Loop);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 2, 37, 30, 78), 0.3f);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 28, 37, 58, 78), 0.3f);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 55, 37, 86, 78), 0.3f);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 83, 37, 117, 78), 0.3f);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 115, 37, 147, 78), 0.3f);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 147, 37, 181, 78), 0.3f);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 178, 37, 213, 78), 0.3f);		
+		player->AddClip(clip);
+
+		//idle2
+		clip = new Clip(PlayMode::Loop);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 93, 427, 119, 466), 0.3f);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 123, 426, 148, 465), 0.3f);
+		player->AddClip(clip);
+	}
+
+	//Run(2 ~ 3)
+	{
+		//Normal Run
+		clip = new Clip(PlayMode::Loop);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 4, 80, 32, 119), 0.1f);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 36, 80, 62, 119), 0.1f);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 65, 80, 96, 119), 0.1f);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 96, 80, 135, 119), 0.1f);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 134, 80, 166, 119), 0.1f);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 170, 80, 202, 119), 0.1f);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 208, 80, 230, 119), 0.1f);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 236, 80, 263, 119), 0.1f);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 266, 80, 293, 119), 0.1f);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 293, 80, 331, 119), 0.1f);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 332, 80, 366, 119), 0.1f);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 368, 80, 400, 119), 0.1f);
+		player->AddClip(clip);
+
+		//Fast Run
+		clip = new Clip(PlayMode::Loop);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 72, 238, 102, 274), 0.1f);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 111, 238, 140, 274), 0.1f);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 149, 238, 178, 274), 0.1f);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 185, 238, 218, 274), 0.1f);
+		player->AddClip(clip);
+	}
+
+	//Sit Down(4)
+	{
+		clip = new Clip(PlayMode::END);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 267, 43, 295, 76), 0.3f);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 299, 50, 331, 76), 0.3f);
+		player->AddClip(clip);
+	}
+
+	//Roll(5)[Turbo]
+	{
+		clip = new Clip(PlayMode::Loop);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 71, 282, 111, 318), 0.1f);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 120, 282, 164, 318), 0.1f);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 171, 282, 211, 318), 0.1f);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 216, 282, 259, 318), 0.1f);
+
+		player->AddClip(clip);
+	}
+
+	//Jump or Roll이 끝난후(6)
+	{
+		clip = new Clip(PlayMode::Loop);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 1, 169, 31, 200), 0.02f);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 34, 169, 62, 200), 0.02f);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 67, 169, 99, 200), 0.02f);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 130, 169, 161, 200), 0.02f);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 192, 169, 223, 200), 0.02f);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 228, 169, 260, 200), 0.02f);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 264, 169, 300, 200), 0.02f);
+
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 0, 205, 31, 233), 0.02f);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 34, 205, 67, 233), 0.02f);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 69, 205, 100, 233), 0.02f);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 105, 205, 133, 233), 0.02f);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 139, 205, 167, 233), 0.02f);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 173, 205, 203, 233), 0.02f);
+
+		player->AddClip(clip);
+	}
+
+	//Push(7)
+	{
+		clip = new Clip(PlayMode::Loop);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 8, 436, 37, 472), 0.3f);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 48, 435, 72, 472), 0.3f);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 80, 436, 108, 472), 0.3f);
+		clip->AddFrame(new Sprite(spriteFile, shaderFile, 120, 435, 144, 472), 0.3f);
+		player->AddClip(clip);
+	}

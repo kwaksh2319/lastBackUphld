@@ -93,6 +93,30 @@
     <ClCompile Include="Object\Ring.cpp">
       <Filter>Object</Filter>
     </ClCompile>
+    <ClCompile Include="Object\Fish.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\SonicPlayer.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Scenes\Sonic.cpp">
+      <Filter>Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Scenes\TitleScene.cpp">
+      <Filter>Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Scenes\Astar.cpp">
+      <Filter>Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\AstarPlayer.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\AstarMonster.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="FindPath\Node.cpp">
+      <Filter>FindPath</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -192,6 +216,30 @@
     <ClInclude Include="Object\Ring.h">
       <Filter>Object</Filter>
     </ClInclude>
+    <ClInclude Include="Object\Fish.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\SonicPlayer.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Scenes\Sonic.h">
+      <Filter>Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Scenes\TitleScene.h">
+      <Filter>Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Scenes\Astar.h">
+      <Filter>Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\AstarPlayer.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\AstarMonster.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="FindPath\Node.h">
+      <Filter>FindPath</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="System">
@@ -212,9 +260,13 @@
     <Filter Include="Scenes">
       <UniqueIdentifier>{42432bff-870b-40e5-93a1-a7a9cdbd4751}</UniqueIdentifier>
     </Filter>
+    <Filter Include="FindPath">
+      <UniqueIdentifier>{121f0cc9-4b34-47ba-88ce-f4963c86a130}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="_Shader2D\Effect.fx" />
     <None Include="_Shader2D\Bounding.fx" />
+    <None Include="_Shader2D\Rect.fx" />
   </ItemGroup>
 </Project>

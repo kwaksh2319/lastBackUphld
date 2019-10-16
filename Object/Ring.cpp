@@ -2,7 +2,7 @@
 #include"Ring.h"
 
 Ring::Ring(D3DXVECTOR2 position)
-	:bCollision(false),bAlive(false),bVisible(true)
+	:bCollision(false),bAlive(false),bVisible(true),position(position)
 {
 	wstring textureFile = Textures + L"Sonic/ring.png";
 	wstring shaderFile = Shaders + L"Effect.fx";
@@ -23,21 +23,44 @@ Ring::Ring(D3DXVECTOR2 position)
 		clip->AddFrame(new Sprite(textureFile, shaderFile, 406, 68, 426, 123), 0.2f);
 		ring->AddClip(clip);
 	}
+	ring->Scale(0.5f, 0.5f);
+	ring->Play(0);
+	
 }
 
 Ring::~Ring()
 {
+	SAFE_DELETE(ring);
 }
 
 void Ring::Update(D3DXMATRIX & V, D3DXMATRIX & P)
 {
+	//player 일정 범위에 있을때 update
+	if (bVisible == false)
+		   return;
+	if (ring->GetCurrentClip() == 1 && ring->GetClip()->EndFrame())
+		bAlive = false;
+	
+	if (bCollision == true)
+		ring->Play(1);
+	
+	ring->DrawBound(true);
+	ring->GetSprite()->DrawCollision(bCollision);
+
+	
+	ring->Position(position);
+	ring->Update(V, P);
 }
 
 void Ring::Render()
 {
+	if (bVisible == false)
+		return;
+
+	ring->Render();
 }
 
 Sprite * Ring::GetSprite()
 {
-	return nullptr;
+	return ring->GetSprite();
 }

@@ -160,6 +160,13 @@ void Clip::Update(D3DXMATRIX & V, D3DXMATRIX & P)
 			}
 				break;
 			case PlayMode::Reverse:
+			{
+				UINT count = 1;
+				for (UINT i = frames.size(); i > 0; i--, ++count)
+				{
+					currentFrame = frames.size() - count;
+				}
+			}
 				break;
 			default:
 				break;

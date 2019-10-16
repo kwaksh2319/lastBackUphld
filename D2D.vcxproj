@@ -123,11 +123,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FindPath\Node.cpp" />
+    <ClCompile Include="Object\AstarMonster.cpp" />
+    <ClCompile Include="Object\AstarPlayer.cpp" />
     <ClCompile Include="Object\Bullet.cpp" />
     <ClCompile Include="Object\Fire.cpp" />
+    <ClCompile Include="Object\Fish.cpp" />
     <ClCompile Include="Object\Marker.cpp" />
     <ClCompile Include="Object\Player.cpp" />
     <ClCompile Include="Object\Ring.cpp" />
+    <ClCompile Include="Object\SonicPlayer.cpp" />
     <ClCompile Include="Render\Animation.cpp" />
     <ClCompile Include="Render\Clip.cpp" />
     <ClCompile Include="Render\LIne.cpp" />
@@ -135,10 +140,13 @@
     <ClCompile Include="Render\Shader.cpp" />
     <ClCompile Include="Render\Sprite.cpp" />
     <ClCompile Include="Program.cpp" />
+    <ClCompile Include="Scenes\Astar.cpp" />
     <ClCompile Include="Scenes\LineTest.cpp" />
     <ClCompile Include="Scenes\MarkingTest.cpp" />
+    <ClCompile Include="Scenes\Sonic.cpp" />
     <ClCompile Include="Scenes\Stage1.cpp" />
     <ClCompile Include="Scenes\Stage2.cpp" />
+    <ClCompile Include="Scenes\TitleScene.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
@@ -159,22 +167,30 @@
     <ClCompile Include="Viewer\FreeCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FindPath\Node.h" />
+    <ClInclude Include="Object\AstarMonster.h" />
+    <ClInclude Include="Object\AstarPlayer.h" />
     <ClInclude Include="Object\Bullet.h" />
     <ClInclude Include="Object\Fire.h" />
+    <ClInclude Include="Object\Fish.h" />
     <ClInclude Include="Object\Marker.h" />
     <ClInclude Include="Object\Player.h" />
     <ClInclude Include="Object\Ring.h" />
+    <ClInclude Include="Object\SonicPlayer.h" />
     <ClInclude Include="Render\Animation.h" />
     <ClInclude Include="Render\Clip.h" />
     <ClInclude Include="Render\Line.h" />
     <ClInclude Include="Render\Rect.h" />
     <ClInclude Include="Render\Shader.h" />
     <ClInclude Include="Render\Sprite.h" />
+    <ClInclude Include="Scenes\Astar.h" />
     <ClInclude Include="Scenes\LineTest.h" />
     <ClInclude Include="Scenes\MarkingTest.h" />
     <ClInclude Include="Scenes\Scene.h" />
+    <ClInclude Include="Scenes\Sonic.h" />
     <ClInclude Include="Scenes\Stage1.h" />
     <ClInclude Include="Scenes\Stage2.h" />
+    <ClInclude Include="Scenes\TitleScene.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="System\CMouse.h" />
     <ClInclude Include="System\Device.h" />
@@ -200,6 +216,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="_Shader2D\Bounding.fx">
+      <FileType>Document</FileType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="_Shader2D\Rect.fx">
       <FileType>Document</FileType>
     </None>
   </ItemGroup>

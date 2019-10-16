@@ -1,10 +1,11 @@
 #include "stdafx.h"
 #include "LineTest.h"
-
-#include "./Render/Line.h"
 #include "./Viewer/FreeCamera.h"
+#include "./Render/Line.h"
 
-
+#include"./Object/Ring.h"
+#include"./Object/Fish.h"
+#define fishCoverage position.x <fishes[i]->Position().x + 10.0f&&position.x > fishes[i]->Position().x - 10.0f&&position.y > fishes[i]->Position().y - 10.0f&&position.y < fishes[i]->Position().y + 10.0f
 
 LineTest::LineTest(SceneValues * values)
 	:Scene(values), mouse(0, 0), cameraPos(0, 0), position(0, 0)
@@ -25,6 +26,12 @@ LineTest::~LineTest()
 	for (Line* line : lines)
 		SAFE_DELETE(line);
 
+	for (Ring* ring : rings)
+		SAFE_DELETE(ring);
+
+	for (Fish* fish : fishes)
+		SAFE_DELETE(fish);
+
 }
 
 void LineTest::Update()
@@ -40,6 +47,13 @@ void LineTest::Update()
 
 	for (Line* line : lines)
 		line->Update(V, P);
+
+
+	for (Ring*ring : rings)
+		ring->Update(V, P);
+
+	for (Fish* fish : fishes)
+		fish->Update(V, P);
 
 	//마우스 포지션 매핑
 	mouse = Mouse->Position();
@@ -61,6 +75,12 @@ void LineTest::Render()
 
 	for (Line* line : lines)
 		line->Render();
+
+	for (Ring*ring : rings)
+		ring->Render();
+
+	for (Fish* fish : fishes)
+		fish->Render();
 }
 
 void LineTest::EditLine()
@@ -136,16 +156,102 @@ void LineTest::EditLine()
 
 }
 
+void LineTest::EditRing()
+{
+
+	bool hovering = ImGui::GetIO().WantCaptureMouse;
+
+	
+
+	if (Mouse->Down(0) && hovering == false) {
+		rings.push_back(new Ring(position));
+		ringPoints.push_back(position);
+	}
+	if (Mouse->Press(2)) {
+		for (size_t i = 0; i < rings.size(); i++) {
+			if (position.x <rings[i]->Position().x + 10.0f&&
+				position.x > rings[i]->Position().x - 10.0f&&
+				position.y > rings[i]->Position().y - 10.0f&&
+				position.y < rings[i]->Position().y + 10.0f) {
+				rings[i]->Position(position);
+				ringPoints[i] = position;
+			}
+		}
+	}
+	
+	if (Mouse->Down(1) && hovering == false) {
+		for (size_t i = 0; i < rings.size(); i++) {
+			if (position.x <rings[i]->Position().x + 10.0f&&
+				position.x > rings[i]->Position().x - 10.0f&&
+				position.y > rings[i]->Position().y - 10.0f&&
+				position.y < rings[i]->Position().y + 10.0f) {
+
+				rings.erase(rings.begin()+i);
+				ringPoints.erase(ringPoints.begin() + i);
+			}
+
+		}
+		
+
+	}
+}
+
+void LineTest::EditFish()
+{
+
+	bool hovering = ImGui::GetIO().WantCaptureMouse;
+
+
+
+	if (Mouse->Down(0) && hovering == false) {
+		fishes.push_back(new Fish(position));
+		fishPoints.push_back(position);
+	}
+	if (Mouse->Press(2)) {
+		for (size_t i = 0; i < fishes.size(); i++) {
+			if (position.x <fishes[i]->Position().x + 10.0f&&
+				position.x > fishes[i]->Position().x - 10.0f&&
+				position.y > fishes[i]->Position().y - 10.0f&&
+				position.y < fishes[i]->Position().y + 10.0f) {
+				fishes[i]->Position(position);
+				fishPoints[i] = position;
+			}
+		}
+	}
+
+	if (Mouse->Down(1) && hovering == false) {
+		for (size_t i = 0; i < fishes.size(); i++) {
+			if (position.x <fishes[i]->Position().x + 10.0f&&
+				position.x > fishes[i]->Position().x - 10.0f&&
+				position.y > fishes[i]->Position().y - 10.0f&&
+				position.y < fishes[i]->Position().y + 10.0f) {
+
+				fishes.erase(fishes.begin() + i);
+				fishPoints.erase(fishPoints.begin() + i);
+			}
+
+		}
+
+
+	}
+}
+
 void LineTest::RenderImGui()
 {
 	//for (Line* line : lines)
 	//	ImGui::LabelText("", "%f %f %f %f", line->RightPoint().x, line->RightPoint().y, line->LeftPoint().x, line->LeftPoint().y);
 	static int combo_item = 0;
-	bool valueChanged = ImGui::Combo("item", &combo_item, "None\0Line\0\0");
+	bool valueChanged = ImGui::Combo("item", &combo_item, "None\0Line\0Ring\0Fish\0Magician\0\0");
 
 
 	if (combo_item == 1) {
 		EditLine();
+	}
+	else if (combo_item == 2) {
+		EditRing();
+	}
+	else if (combo_item == 3) {
+		EditFish();
 	}
 	//=====================================================================
 	//button
@@ -170,6 +276,50 @@ void LineTest::RenderImGui()
 
 		for (UINT i = 0; i < linePoints.size(); i++)
 			lines.push_back(new Line(linePoints[i].first, linePoints[i].second));
+	}
+
+	if (ImGui::Button("Save Ring") == true) {
+		FileManger::SetMarker(ringPoints);
+		FileManger::Save(L"ring.bin");
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Load Ring") == true) {
+		for (size_t i = 0; i < rings.size(); i++)
+			SAFE_DELETE(rings[i]);
+
+		rings.clear();
+		ringPoints.clear();
+
+		FileManger::Load(L"ring.bin");
+		ringPoints = FileManger::GetMarker();
+
+		for (size_t i = 0; i < ringPoints.size(); i++)
+			rings.push_back(new Ring(ringPoints[i]));
+
+	}
+
+
+	//fish
+
+
+	if (ImGui::Button("Save Fish") == true) {
+		FileManger::SetMarker(fishPoints);
+		FileManger::Save(L"fish.bin");
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Load Fish") == true) {
+		for (size_t i = 0; i < fishes.size(); i++)
+			SAFE_DELETE(fishes[i]);
+
+		fishes.clear();
+		fishPoints.clear();
+
+		FileManger::Load(L"fish.bin");
+		fishPoints = FileManger::GetMarker();
+
+		for (size_t i = 0; i < fishPoints.size(); i++)
+			fishes.push_back(new Fish(fishPoints[i]));
+
 	}
 
 

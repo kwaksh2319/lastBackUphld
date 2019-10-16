@@ -7,10 +7,11 @@
 #include"./Scenes/Stage2.h"
 #include"./Scenes/MarkingTest.h"
 #include"./Scenes/LineTest.h"
+#include"./Scenes/Sonic.h"
+#include"./Scenes/TitleScene.h"
+#include"./Scenes/Astar.h"
 
 
-//Sprite* mario;
-//Background* background;
 
 
 
@@ -18,6 +19,7 @@
 SceneValues* values;
 vector<Scene*> scenes;
 
+bool bStart = false;
 
 void InitScene()
 {
@@ -26,13 +28,8 @@ void InitScene()
 	values->MainCamera = new FreeCamera;//view
 
 	D3DXMatrixIdentity(&values->Projection);
-	//stage1=new Stage1();
-	scenes.push_back(new LineTest(values));
-
 	
-	
-	
-	
+	scenes.push_back(new Astar(values));
 }
 
 void DestroyScene()
@@ -66,15 +63,12 @@ void Update()
 
 	);
 
-	/*
-	D3DXMatrixOrthoOffCenterLH(
-		&values->Projection,
-		horizental.x, horizental.y, vertical.x, vertical.y,
-		-10, 10
-	);*/
 
-	for (Scene* scene : scenes)
-		scene->Update();
+
+
+	scenes[0]->Update();
+	
+	
 	
 	
 
@@ -92,8 +86,9 @@ void Render()
 	DeviceContext->ClearRenderTargetView(RTV, (float*)bgColor);
 	{
 		
-		for (Scene* scene : scenes)
-			scene->Render();
+		
+			scenes[0]->Render();
+		
 		
 
 
