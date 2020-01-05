@@ -4,8 +4,10 @@
 #include"./HLD/Object/HLDLaser.h"
 #include"./HLD/Object/HLDhp.h"
 
+
+
 HLDBoss::HLDBoss(D3DXVECTOR2 pos)
-	:position(pos), scale(1.0f, 1.0f), bColliCount(0), bCollision(false), moveSpeed(500.0f), reflectSpeed(15.0f), tmpPlayerDir(0.0f, 0.0f), tmpNowPos(0.0f, 0.0f), comDegreeLeft(-1.39626f), comDegreeRight(1.74533f), comDegree(0.0f), bCheckMove(false), readySpeedx(50.0f), readySpeedy(50.0f), bCheckBullet(false), bulletRad(1.0f,0.0f),tmpDeltaX(-0.1f),  tmpDeltaY(0.1f),castCount(0), bCheckCastShot(false), bulletTime(0),castCount2(0),bCheckBullet2(false), laserRad(0.0f), laserRadDelta(5.0f), bCheckCollisionSlash(false), bCheckCollisionSword(false)
+	:position(pos), scale(1.0f, 1.0f), bColliCount(0), bCollision(false), moveSpeed(500.0f), reflectSpeed(15.0f), tmpPlayerDir(0.0f, 0.0f), tmpNowPos(0.0f, 0.0f), comDegreeLeft(-1.39626f), comDegreeRight(1.74533f), comDegree(0.0f), bCheckMove(false), readySpeedx(50.0f), readySpeedy(50.0f), bCheckBullet(false), bulletRad(1.0f,0.0f),tmpDeltaX(-0.1f),  tmpDeltaY(0.1f),castCount(0), bCheckCastShot(false), bulletTime(0),castCount2(0),bCheckBullet2(false), laserRad(0.0f), laserRadDelta(5.0f), bCheckCollisionSlash(false), bCheckCollisionSword(false), damage(0.0f), damageScale(0.0f),bRenderBoss(false)
 
 {
 
@@ -204,15 +206,42 @@ HLDBoss::HLDBoss(D3DXVECTOR2 pos)
 		
 
 		boss->AddClip(clip);
+	} 
+	{
+
+		clip = new Clip(PlayMode::LoopStop);
+		clip->AddFrame(new Sprite(textureFile, shaderFile, 200, 935, 323, 1070), 0.5f);
+		clip->AddFrame(new Sprite(textureFile, shaderFile, 200, 935, 323, 1070), 0.5f);
+		clip->AddFrame(new Sprite(textureFile, shaderFile, 200, 935, 323, 1070), 0.5f);
+
+		clip->AddFrame(new Sprite(textureFile, shaderFile, 995, 315, 1050, 425), 0.1f);
+		clip->AddFrame(new Sprite(textureFile, shaderFile, 905, 315, 960, 425), 0.1f);
+		clip->AddFrame(new Sprite(textureFile, shaderFile, 645, 303, 695, 413), 0.1f);
+		clip->AddFrame(new Sprite(textureFile, shaderFile, 550, 320, 600, 413), 0.1f);
+		clip->AddFrame(new Sprite(textureFile, shaderFile, 449, 310, 493, 405), 0.1f);
+		clip->AddFrame(new Sprite(textureFile, shaderFile, 380, 300, 380, 405), 0.1f);
+		clip->AddFrame(new Sprite(textureFile, shaderFile, 303, 303, 330, 380), 0.1f);
+		clip->AddFrame(new Sprite(textureFile, shaderFile, 225, 305, 252, 375), 0.1f);
+		clip->AddFrame(new Sprite(textureFile, shaderFile, 766, 240, 793, 305), 0.1f);
+		clip->AddFrame(new Sprite(textureFile, shaderFile, 702, 235, 725, 305), 0.1f);
+		clip->AddFrame(new Sprite(textureFile, shaderFile, 647, 230, 670, 267), 0.1f);
+		clip->AddFrame(new Sprite(textureFile, shaderFile, 590, 228, 611, 265), 0.1f);
+		clip->AddFrame(new Sprite(textureFile, shaderFile, 518, 240, 540, 272), 0.1f);
+		clip->AddFrame(new Sprite(textureFile, shaderFile, 457, 232, 474, 252), 0.1f);
+		clip->AddFrame(new Sprite(textureFile, shaderFile, 390, 235, 405, 255), 0.1f);
+		clip->AddFrame(new Sprite(textureFile, shaderFile, 340, 230, 350, 251), 0.1f);
+		clip->AddFrame(new Sprite(textureFile, shaderFile, 273, 225, 285, 250), 0.1f);
+		clip->AddFrame(new Sprite(textureFile, shaderFile, 220, 223, 230, 250), 0.1f);
+		boss->AddClip(clip);
 	}
 	//boss->Play((UINT)State::Laser);
 	state = State::Appear;
-	boss->DrawBound(true);
+	//boss->DrawBound(true);
 	boss->Position(position);
 	boss->Scale(scale);
 	boss->Play((UINT)state);
 	
-
+	GetHpPoints(hpPoint);
 }
 
 HLDBoss::~HLDBoss()
@@ -254,11 +283,9 @@ void HLDBoss::Scale(D3DXVECTOR2 val)
 
 void HLDBoss::Update(D3DXMATRIX & V, D3DXMATRIX & P)
 {
-	hp->HpBarPosition(hpBarPoint);
-	hp->HpBarScale(10.0f, 10.0f);
-	hp->Update(V, P);
-	bulletTime += Time::Delta();
 	
+	bulletTime += Time::Delta();
+	bossTime+= Time::Delta();
 	Pattern();
 	
 
@@ -273,12 +300,37 @@ void HLDBoss::Update(D3DXMATRIX & V, D3DXMATRIX & P)
 		bullets->Update(V, P);
 	for (HLDCastBullet*bullets2 : bullet2)
 		bullets2->Update(V, P);
+
+
 	boss->Update(V, P);
 	
+
+
+	{//hp
+		if (bCheckCollisionSlash || bCheckCollisionSword) {
+			
+			damage = damage + 50 * Time::Delta();
+			damageScale= damageScale+1.6f* Time::Delta();
+		}
+
+		hp->HpBarPosition(hpBarPoint);
+		hp->HpBarScale(10.0f, 5.0f);
+
+	   if(damageScale<10.0f){
+		hp->HpPosition(D3DXVECTOR2(hpPoint.x- damage,hpPoint.y));
+		hp->HpScale(10.0f- damageScale, 5.0f);
+	   }
+
+
+		
+	}
+	hp->Update(V, P);
+
 }
 
 void HLDBoss::Render()
 {
+	if(!bRenderBoss){
 	hp->Render();
 	boss->Render();
 	for (HLDCastBullet*bullets : bullet)
@@ -289,10 +341,10 @@ void HLDBoss::Render()
 
 	laser->Render();
 
-	ImGui::LabelText("castCount", "%d", castCount);
-	ImGui::LabelText("castCount2", "%d", castCount2);
-	ImGui::LabelText(" bulletTime", "%lf", bulletTime);
-
+	//ImGui::LabelText("castCount", "%d", castCount);
+	//ImGui::LabelText("castCount2", "%d", castCount2);
+	//ImGui::LabelText(" bulletTime", "%lf", bulletTime);
+	}
 
 }
 
@@ -383,15 +435,72 @@ void HLDBoss::GetHpBarPoint(D3DXVECTOR2 val)
 	hpBarPoint= val;
 }
 
+void HLDBoss::GetHpPoint(D3DXVECTOR2 val)
+{
+	hpPoint =val;
+	//GetHpPoints(val);
+}
+
+void HLDBoss::GetHpPoints(D3DXVECTOR2 val)
+{
+	tmpHpPoint.x = val.x+6.0f;
+	tmpHpPoint.y = val.y-Height*2/3+18.0f;
+}
+
+
+
 
 Sprite * HLDBoss::GetSprite()
 {
 	return boss->GetSprite();
 }
 
+bool HLDBoss::SetPlayerSpirte(Sprite * val)
+{
+     bool bBulletCheck = false;
+	for(HLDCastBullet*bullets: bullet){
+		bBulletCheck |=Sprite::Aabb(val, bullets->GetSprite());
+	}
+
+	for (HLDCastBullet*bullets : bullet2) {
+		bBulletCheck |= Sprite::Aabb(val, bullets->GetSprite());
+	}
+	
+	return bBulletCheck;
+}
+
+void HLDBoss::GetSlashSpirte(Sprite * val)
+{
+	bool bBulletCheck = false;
+	for (HLDCastBullet*bullets : bullet) {
+		bBulletCheck = Sprite::Aabb(val, bullets->GetSprite());
+		if(bBulletCheck){
+		bullets->GetCollisionSlash(true);
+		}
+	}
+	bBulletCheck = false;
+	for (HLDCastBullet*bullets : bullet2) {
+		bBulletCheck = Sprite::Aabb(val, bullets->GetSprite());
+		if (bBulletCheck) {
+			bullets->GetCollisionSlash(true);
+		}
+	}
+	
+	
+}
+
+
+
+Sprite * HLDBoss::GetLaserSprite()
+{
+	return laser->GetSprite();
+}
+
 void HLDBoss::Pattern()
 {
-	
+	if (damageScale >= 10.0f) {
+		state = State::Death;
+	}
 	
 	switch (state)
 	{
@@ -499,6 +608,15 @@ void HLDBoss::Pattern()
 			castCount2 = 0;
 			bCheckBullet2 = false;
 			bulletTime = 0.0f;
+
+			for (HLDCastBullet*bullets : bullet) {
+					bullets->GetCollisionSlash(false);	
+			}
+			
+			for (HLDCastBullet*bullets : bullet2) {
+					bullets->GetCollisionSlash(false);
+			}
+
 			state = State::CastShot;
 		}
 		break;
@@ -599,6 +717,14 @@ void HLDBoss::Pattern()
 		}
 		
 		break;
+	case State::Death:
+	
+		boss->Play((UINT)State::Death);
+		if (!boss->GetClip()->EndFramePattern()) {
+			bRenderBoss = true;
+		}
+
+			break;
 	default:
 		break;
 	}

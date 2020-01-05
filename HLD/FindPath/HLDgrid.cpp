@@ -142,25 +142,31 @@ bool HLDgrid::PtInRect(const HLDgrid * rect, D3DXVECTOR2 ptMouse)
 	return bCheck;
 }
 
-void HLDgrid::TransGetPosition(D3DXVECTOR2 pos)
+
+
+D3DXVECTOR2 HLDgrid::TransGetPosition(D3DXVECTOR2 pos)
 {
-	UINT index[4];
-	float x = pos.x;
-	float z = pos.y;
-	index[0] = width * z + x;
-	index[1] = width * (z+1) + x;
-	index[2] = width * z+x+1;
-	index[3] = width * (z+1) + x + 1;
+	UINT indexX[4];
+	float x = pos.x+ WidthNode/2;
+	float z = pos.y+ HeightNode/2;
+	indexX[0] = WidthNode * z + x;
+	indexX[1] = WidthNode * (z + 1) + x;
+	indexX[2] = WidthNode * z + x + 1;
+	indexX[3] = WidthNode * (z + 1) + x + 1;
+	UINT indexY[4];
 
-	D3DXVECTOR3 v[4];
-	for (int i = 0; i < 4; i++){
-		v[index[i]].x = vertices[index[i]].Position.x;
-		v[index[i]].y = vertices[index[i]].Position.y;
-		v[index[i]].z = vertices[index[i]].Position.z;
+	indexY[0] =HeightNode * z + x;
+	indexY[1] = HeightNode * (z + 1) + x;
+	indexY[2] = HeightNode * z + x + 1;
+	indexY[3] = HeightNode * (z + 1) + x + 1;
+	D3DXVECTOR2 v[4];
+	for (int i = 0; i < 4; i++) {
+		v[i].x = vertices[indexX[i]].Position.x;
+		v[i].y = vertices[indexY[i]].Position.y;
+	//	v[i].z = vertices[index[i]].Position.z;
 	}
+	return v[0];
 }
-
-
 void HLDgrid::CreateBuffer(wstring shaderFile)
 {
 	shader = new Shader(shaderFile);

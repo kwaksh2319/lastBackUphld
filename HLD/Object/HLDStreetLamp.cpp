@@ -2,6 +2,7 @@
 #include"HLDStreetLamp.h"
 
 HLDStreetLamp::HLDStreetLamp(D3DXVECTOR2 pos)
+	:bCheck(false)
 {
 	wstring textureFile = Textures + L"./HDL/HyperLightDrifter_sprite.png";
 	wstring shaderFile = Shaders + L"Effect.fx";
@@ -9,6 +10,7 @@ HLDStreetLamp::HLDStreetLamp(D3DXVECTOR2 pos)
 	streetLamp = new Sprite(textureFile, shaderFile, 780, 250, 799, 319);
 	scale = D3DXVECTOR2(1.0f, 1.0f);
 	position = pos;
+	//streetLamp->DrawBoundRange(true);
 }
 
 HLDStreetLamp::~HLDStreetLamp()
@@ -39,9 +41,15 @@ void HLDStreetLamp::Scale(D3DXVECTOR2 val)
 	scale = val;
 }
 
+void HLDStreetLamp::GetRangeCollision(bool val)
+{
+	bCheck = val;
+
+}
+
 void HLDStreetLamp::Update(D3DXMATRIX & V, D3DXMATRIX & P)
 {
-
+	streetLamp->DrawBloom(bCheck);
 	streetLamp->Position(position);
 	streetLamp->Scale(scale);
 	streetLamp->Update(V, P);

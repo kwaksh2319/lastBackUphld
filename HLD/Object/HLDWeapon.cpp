@@ -13,7 +13,7 @@ HLDWeapon::HLDWeapon(D3DXVECTOR2 pos, D3DXVECTOR2 size)
 	math = new HLDMath();
 	sword->Position(position);
 	sword->Scale(scale);
-	sword->DrawBound(true);
+//	sword->DrawBound(true);
 	dir = DirectionWeapon::End;
 }
 

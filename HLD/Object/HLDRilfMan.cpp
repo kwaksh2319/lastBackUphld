@@ -74,9 +74,9 @@ HLDRilfMan::HLDRilfMan(D3DXVECTOR2 pos)
 	rilfMan->Scale(scale);
 	rilfMan->Position(position);
 	rilfMan->Play(1);
-	rilfMan->DrawBound(true);
-	rilfMan->DrawBoundRange(true);
-	rilfMan->DrawBoundStopRange(true);
+	//rilfMan->DrawBound(true);
+	//rilfMan->DrawBoundRange(true);
+	//rilfMan->DrawBoundStopRange(true);
 
 	rilfMan->Rotation(0, 0, 0);
 	
@@ -184,7 +184,7 @@ void HLDRilfMan::BulletTime()
 	static D3DXVECTOR2 playPosTmp;
 	
 	
-	if (!bCheckRangeCollision) {
+	if (!bCheckRangeCollision&&!bCheckStop) {
 		BFSUpdate();
 		rilfMan->Play(1);
 		for (int i = 0; i < 3; i++) {
@@ -272,7 +272,7 @@ Sprite* HLDRilfMan::GetBulletSprite(int i)
 void HLDRilfMan::BFSUpdate()
 {
 	float worldTime = Time::Delta();
-	static float MoveMonster = 100;
+	static float MoveMonster = 10;
 	static int countNum = 1;
 	static bool bCheckM = false;
 	static bool bCheckS = false;

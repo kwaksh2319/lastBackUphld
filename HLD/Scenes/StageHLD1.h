@@ -10,9 +10,10 @@ private:
 	vector<D3DXVECTOR2> magmaPoint;
 	Sprite*background;
 	
-	class AstarMonster* monster;
+	
 	class HLDPlayer *player;
-
+	class InventoryHDL *inven;
+	
 
 	vector<class HLDPilar*> pilar;
 	vector<class HLDCrystal*> crystal;
@@ -46,7 +47,8 @@ private:
 	Sprite*monsterRect;
 	Sprite*backgroundRect;
 	//class NodeHLD* node;
-	class BFSNodePathHLD* bfs;
+	//class BFSNodePathHLD* bfs;
+	class BFSNodePathHLDCopy* bfs;
 	class NodeHLDCopy*nodeTmp;
 	D3DXVECTOR2 massSize;
 	D3DXVECTOR2 massSizeBackground;
@@ -123,7 +125,8 @@ private:
 	void CheckSlashBrute();
 	void CheckPlayerBrute();
 	void CheckPlayerBullet();
-	
+	void CheckStreetLamp();
+	void CollisionCrystal();
 
 public:
 	Stage1HLD(SceneValues* values);

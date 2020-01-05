@@ -20,8 +20,8 @@ private:
 	Shader* shader;
 	ID3D11Buffer* vertexBuffer;
 
-	UINT width = 16;
-	UINT height = 25; //실행 -> 뒤가 잘려서 안보임 -> 보고 싶음
+	UINT width = 862;
+	UINT height = 960; //실행 -> 뒤가 잘려서 안보임 -> 보고 싶음
 
 	//Todo 02. 인덱스 데이터, 버퍼 생성
 	
@@ -59,7 +59,7 @@ public:
 	D3DXCOLOR Color() { return color; }
 
 	static bool PtInRect(const HLDgrid* rect, D3DXVECTOR2 ptMouse);
-
-
-	void TransGetPosition(D3DXVECTOR2 pos);
+	D3DXVECTOR2 TransGetPosition(D3DXVECTOR2 pos);
+	
+	
 };

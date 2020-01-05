@@ -2,7 +2,7 @@
 #include"HLDCastBullet.h"
 
 HLDCastBullet::HLDCastBullet(D3DXVECTOR2 pos)
-	:position(pos),scale(2.0f,2.0f),bCheckStart(false),moveSpeed(100.0f)
+	:position(pos),scale(2.0f,2.0f),bCheckStart(false),moveSpeed(100.0f), bCheckCollision(false)
 {
 	wstring textureFile = Textures + L"./HDL/GIF/01_f02judegement_filter01.png";
 	wstring shaderFile = Shaders + L"Effect.fx";
@@ -40,12 +40,26 @@ void HLDCastBullet::Scale(D3DXVECTOR2 val)
 	scale = val;
 }
 
+void HLDCastBullet::GetCollisionSlash(bool val)
+{
+	bCheckCollision = val;
+
+}
+
 void HLDCastBullet::Update(D3DXMATRIX & V, D3DXMATRIX & P)
 {
 	if (bCheckStart) {
+		
 		position.x += cos(radian.x*D3DX_PI*2)*moveSpeed*Time::Delta();
 		position.y += sin(radian.y*D3DX_PI*2)*moveSpeed * Time::Delta();
 		
+	}
+
+	if (bCheckCollision) {
+		moveSpeed =  -300.0f;
+	}
+	else if (!bCheckCollision) {
+		moveSpeed = 100.0f;
 	}
 
 	bullet->Position(position);
@@ -55,7 +69,9 @@ void HLDCastBullet::Update(D3DXMATRIX & V, D3DXMATRIX & P)
 
 void HLDCastBullet::Render()
 {
-	bullet->Render();
+	
+	   bullet->Render();
+	
 }
 
 void HLDCastBullet::StartMove(bool val )

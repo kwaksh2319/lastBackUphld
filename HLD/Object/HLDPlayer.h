@@ -11,8 +11,9 @@ class HLDPlayer : public IFollowing {
 
 
 
-private:
-
+//private:
+	
+protected:
 	D3DXVECTOR2 position;
 	D3DXVECTOR2 alterPosition[3];
 	D3DXVECTOR2 scale;
@@ -21,6 +22,7 @@ private:
 	D3DXVECTOR2 backgroundPoint;
 	D3DXVECTOR2 defaultCameraPoint;
 	Animation *player;
+
 
 	
 		
@@ -44,10 +46,11 @@ private:
 	bool bCheckStage01;
 	bool bCheckBrute;
 	bool bCheckDash;
+	bool bCheckInven;
 	vector<bool>bCheckWalls;
 	//bool bCheckSlash;
-	
-private:
+//private:	
+protected:
 	void KeyDirection();
 	void RotationWeapon();
 public:
@@ -79,11 +82,11 @@ public:
 	void SetWallCollision(bool val,int count);
 	Direction AttackDir(Direction dir, bool bCheckDown, bool bCheckLeft, bool bCheckRight, bool bCheckUp);
 	
-	//D3DXVECTOR2 cameraPosHp(D3DXVECTOR2 val) { return defaultCameraPoint= val; }
+	D3DXVECTOR2 cameraPosHp() { return D3DXVECTOR2(defaultCameraPoint.x-Width/2, defaultCameraPoint.y - Height+20.0f); }
 	void GetStageBool(bool val);
 	//	void GetSlashBool(bool val);
 	
-
+	
 
 
 

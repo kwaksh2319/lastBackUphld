@@ -7,6 +7,7 @@ private:
 	D3DXVECTOR2 scale;
 	Sprite*bullet;
 	bool bCheckStart;
+	bool bCheckCollision;
 	float moveSpeed;
 	D3DXVECTOR2 radian;
 
@@ -22,6 +23,7 @@ public:
 	void Scale(float x, float y);
 	void Scale(D3DXVECTOR2 val);
 	D3DXVECTOR2 Scale() { return scale; }
+	void GetCollisionSlash(bool val);
 	void Update(D3DXMATRIX &V,D3DXMATRIX&P);
 	void Render();
 	void StartMove(bool val);

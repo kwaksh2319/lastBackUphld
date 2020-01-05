@@ -6,13 +6,13 @@
 #define WidthNode 16
 #define HeightNode 25
 
-//#define Nodes nodes[y][x]
+//#define Nodes pointTmps[y][x]
 #define Nodes pointTmps[y][x]
-NodeHLDCopy::NodeHLDCopy(D3DXVECTOR2 position, D3DXVECTOR2 rectScale,D3DXVECTOR2 size, D3DXCOLOR color)
-	:nodeType(NodeTypes::None), color(color),rectSize(rectScale),positions(position),scales(size)
+NodeHLDCopy::NodeHLDCopy(D3DXVECTOR2 position, D3DXVECTOR2 rectScale, D3DXVECTOR2 size, D3DXCOLOR color)
+	:nodeType(NodeTypes::None), color(color), rectSize(rectScale), positions(position), scales(size)
 	, startX(0), startY(0), goalX(0), goalY(0)
 	, ptMouse(0, 0)
-	, startPos(0, 0), goalPos(0, 0), bReadyToMove(false), bWallCheck(false)
+	, startPos(0, 0), goalPos(0, 0), bReadyToMove(false), bWallCheck(false), bTmpCheck(false)
 {
 	wstring shaderFile = Shaders + L"Rect.fx";
 	float positionX = 0 * rectSize.x - Width * 0.25f;
@@ -20,21 +20,21 @@ NodeHLDCopy::NodeHLDCopy(D3DXVECTOR2 position, D3DXVECTOR2 rectScale,D3DXVECTOR2
 	grid=new HLDgrid(shaderFile, positions, D3DXVECTOR2(1.0f,1.0f));//D3DXVECTOR2(positionX, positionY)
 	
 	rect = new Rect(shaderFile, D3DXVECTOR2(positionX, positionY),rectScale);
-	positionX = rect->Position().x;
-	positionY = rect->Position().y;
+	positionX = -480.0f;
+	positionY = -431.0f;
 	for (UINT y = 0; y < HeightNode; y++)
 	{
 
-		positionX = rect->Position().x;
-		positionY = positionY + 80.0f*y;
+		//positionX = rect->Position().x;
+		positionY = positionY + 1.0f* 34.48f;//*y;
 		//positionY = rect->Position().y;
 		for (UINT x = 0; x < WidthNode; x++)
 		{
 		//	float positionXx = x * rectSize.x - Width * 0.5f; //사각형 사이즈 넣어줘야함
 		//	float positionYy = y * rectSize.y - Height;
-			positionX = positionX + 80.0f * x;
 			
-			Nodes.first=D3DXVECTOR2(positionX, positionY);
+			
+			Nodes.first = D3DXVECTOR2(positionX, positionY);//.push_back(D3DXVECTOR2(positionX, positionY));
 			Nodes.second.start = false;
 			Nodes.second.goal = false;
 			Nodes.second.wall = false;
@@ -44,8 +44,10 @@ NodeHLDCopy::NodeHLDCopy(D3DXVECTOR2 position, D3DXVECTOR2 rectScale,D3DXVECTOR2
 			Nodes.second.close = false;
 			Nodes.second.parent.x = Inf;
 			Nodes.second.parent.y = Inf;
+			positionX = positionX + 1.0f*64.0f;
 			
 		}
+		positionX = -480.0f;
 	}
 	/*
 	for (UINT y = 0; y < HeightNode; y++)
@@ -120,8 +122,15 @@ void NodeHLDCopy::Update(D3DXMATRIX & V, D3DXMATRIX & P)
 void NodeHLDCopy::Render()
 {
 	
+	ImGui::LabelText("ptMouse", "%f,%f", ptMouse.x, ptMouse.y);
+	ImGui::LabelText("startPos", "%f,%f", startPos.x, startPos.y);
+	ImGui::LabelText("goalPos", "%f,%f", goalPos.x, goalPos.y);
+	ImGui::LabelText("bCheckPR", "%d", bTmpCheck ? 1 : 0);
 
-	grid->Render();
+	//ImGui::LabelText("ptMouse_pos", "%d", PtInRect(pointTmps.first, ptMouse));
+	ImGui::LabelText("Node01", "%f,%f", pointTmps[24][15].first.x, pointTmps[24][15].first.y);
+		
+	//grid->Render();
 	/*
 	for (UINT y = 0; y < HeightNode; y++)
 	{
@@ -157,7 +166,7 @@ void NodeHLDCopy::Render()
 	/*
 	for (UINT i = 0; i < way.size(); i++)
 	{
-		nodes[way[i].y][way[i].x].first->Color(1, 1, 1);
+		pointTmps[way[i].y][way[i].x].first->Color(1, 1, 1);
 	}
 
 	RenderText();
@@ -213,11 +222,15 @@ void NodeHLDCopy::Reset()
 
 D3DXVECTOR2 NodeHLDCopy::Position()
 {
+	int countTmp = 0;
 	for (UINT y = 0; y < HeightNode; y++)
 	{
+		countTmp += y;
 		for (UINT x = 0; x < WidthNode; x++)
 		{
-			if (PtInRect(Nodes.first, ptMouse))
+			countTmp += x;
+			
+			if (PtInRect(Nodes.first,ptMouse))//ptMouse))
 			{
 				return Nodes.first;
 			}
@@ -229,21 +242,22 @@ D3DXVECTOR2 NodeHLDCopy::Position()
 
 bool NodeHLDCopy::PtInRect(D3DXVECTOR2 rectPose, D3DXVECTOR2 target)
 {
-	float xScale = rectSize.x*0.5f;//rect->scale.x*0.5f;
-	float yScale = rectSize.y*0.5f;//rect->scale.y*0.5f;
+	float xScale = 64.0f*0.5f;//rect->scale.x*0.5f;
+	float yScale = 34.8f*0.5f;//rect->scale.y*0.5f;
 
 	float left = rectPose.x-xScale;    // rect->position.x - xScale;
-	float right = rectPose.x - xScale; //rect->position.x + xScale;
-	float bottom = rectPose.y - xScale; //rect->position.y - yScale;
-	float top = rectPose.y - xScale; //rect->position.y + yScale;
+	float right = rectPose.x + xScale; //rect->position.x + xScale;
+	float bottom = rectPose.y - yScale; //rect->position.y - yScale;
+	float top = rectPose.y +yScale; //rect->position.y + yScale;
 
 	bool bCheck = true;
+	
 
-	bCheck &= ptMouse.x > left;
-	bCheck &= ptMouse.x < right;
-	bCheck &= ptMouse.y > bottom;
-	bCheck &= ptMouse.y < top;
-
+	bCheck &= target.x > left;
+	bCheck &= target.x < right;
+	bCheck &= target.y > bottom;
+	bCheck &= target.y < top;
+	bTmpCheck = bCheck;
 
 	return bCheck;
 }
@@ -261,11 +275,14 @@ void NodeHLDCopy::RenderText()
 
 void NodeHLDCopy::SetStart()
 {
+	int countTmp = 0;
 	for (UINT y = 0; y < HeightNode; y++)
 	{
+		countTmp += y;
 		for (UINT x = 0; x < WidthNode; x++)
 		{
-			if (PtInRect(Nodes.first, startPos))
+			countTmp += x;
+			if (PtInRect(Nodes.first, startPos))//Nodes.first, startPos))				
 			{
 				Nodes.second.start = true;
 				Nodes.second.g = 0;
@@ -282,11 +299,15 @@ void NodeHLDCopy::SetStart()
 
 void NodeHLDCopy::SetGoal()
 {
+
+	int countTmp = 0;
 	for (UINT y = 0; y < HeightNode; y++)
 	{
+		countTmp += y;
 		for (UINT x = 0; x < WidthNode; x++)
 		{
-			if (PtInRect(Nodes.first, goalPos))
+			countTmp += x;
+			if (PtInRect(Nodes.first, goalPos))// goalPos))
 			{
 				Nodes.second.goal = true;
 				goalX = x;
@@ -302,17 +323,22 @@ void NodeHLDCopy::SetGoal()
 
 void NodeHLDCopy::SetWall()
 {
+	int countTmp = 0;
 	for (UINT y = 0; y < HeightNode; y++)
 	{
+		countTmp += y;
 		for (UINT x = 0; x < WidthNode; x++)
 		{
-			if (PtInRect(Nodes.first, ptMouse))
+			countTmp += x;
+			if (Nodes.first, ptMouse)
 			{
 				Nodes.second.wall = true;
 			}
 		}
 	}
 }
+
+
 
 void NodeHLDCopy::FindPath()
 {
@@ -380,7 +406,7 @@ void NodeHLDCopy::FindPath()
 		{
 			for (UINT x = 0; x < WidthNode; x++)
 			{
-				if (nodes[min.y][min.x].second.f >= Nodes.second.f &&
+				if (pointTmps[min.y][min.x].second.f >= Nodes.second.f &&
 					Nodes.second.wall == false &&
 					Nodes.second.close == false)
 				{
@@ -395,116 +421,116 @@ void NodeHLDCopy::FindPath()
 		//왼쪽
 		if (min.x != 0)
 		{
-			if (nodes[min.y][min.x - 1].second.g > 10 + nodes[min.y][min.x].second.g)
+			if (pointTmps[min.y][min.x - 1].second.g > 10 + pointTmps[min.y][min.x].second.g)
 			{
-				nodes[min.y][min.x - 1].second.g = 10 + nodes[min.y][min.x].second.g;
-				nodes[min.y][min.x - 1].second.parent.x = min.x;
-				nodes[min.y][min.x - 1].second.parent.y = min.y;
+				pointTmps[min.y][min.x - 1].second.g = 10 + pointTmps[min.y][min.x].second.g;
+				pointTmps[min.y][min.x - 1].second.parent.x = min.x;
+				pointTmps[min.y][min.x - 1].second.parent.y = min.y;
 			}
 		}
 
 		//오른쪽
 		if (min.x != WidthNode - 1)
 		{
-			if (nodes[min.y][min.x + 1].second.g > 10 + nodes[min.y][min.x].second.g)
+			if (pointTmps[min.y][min.x + 1].second.g > 10 + pointTmps[min.y][min.x].second.g)
 			{
-				nodes[min.y][min.x + 1].second.g = 10 + nodes[min.y][min.x].second.g;
-				nodes[min.y][min.x + 1].second.parent.x = min.x;
-				nodes[min.y][min.x + 1].second.parent.y = min.y;
+				pointTmps[min.y][min.x + 1].second.g = 10 + pointTmps[min.y][min.x].second.g;
+				pointTmps[min.y][min.x + 1].second.parent.x = min.x;
+				pointTmps[min.y][min.x + 1].second.parent.y = min.y;
 			}
 		}
 
 		//위
 		if (min.y != 0)
 		{
-			if (nodes[min.y - 1][min.x].second.g > 10 + nodes[min.y][min.x].second.g)
+			if (pointTmps[min.y - 1][min.x].second.g > 10 + pointTmps[min.y][min.x].second.g)
 			{
-				nodes[min.y - 1][min.x].second.g = 10 + nodes[min.y][min.x].second.g;
-				nodes[min.y - 1][min.x].second.parent.x = min.x;
-				nodes[min.y - 1][min.x].second.parent.y = min.y;
+				pointTmps[min.y - 1][min.x].second.g = 10 + pointTmps[min.y][min.x].second.g;
+				pointTmps[min.y - 1][min.x].second.parent.x = min.x;
+				pointTmps[min.y - 1][min.x].second.parent.y = min.y;
 			}
 		}
 
 		//아래
 		if (min.y != HeightNode - 1)
 		{
-			if (nodes[min.y + 1][min.x].second.g > 10 + nodes[min.y][min.x].second.g)
+			if (pointTmps[min.y + 1][min.x].second.g > 10 + pointTmps[min.y][min.x].second.g)
 			{
-				nodes[min.y + 1][min.x].second.g = 10 + nodes[min.y][min.x].second.g;
-				nodes[min.y + 1][min.x].second.parent.x = min.x;
-				nodes[min.y + 1][min.x].second.parent.y = min.y;
+				pointTmps[min.y + 1][min.x].second.g = 10 + pointTmps[min.y][min.x].second.g;
+				pointTmps[min.y + 1][min.x].second.parent.x = min.x;
+				pointTmps[min.y + 1][min.x].second.parent.y = min.y;
 			}
 		}
 
 		//좌상
 		if (min.x != 0 && min.y != 0)
 		{
-			if (nodes[min.y - 1][min.x].second.wall == true &&
-				nodes[min.y][min.x - 1].second.wall == true)
+			if (pointTmps[min.y - 1][min.x].second.wall == true &&
+				pointTmps[min.y][min.x - 1].second.wall == true)
 			{
 				//
 			}
-			else if (nodes[min.y - 1][min.x - 1].second.g > 14 + nodes[min.y][min.x].second.g)
+			else if (pointTmps[min.y - 1][min.x - 1].second.g > 14 + pointTmps[min.y][min.x].second.g)
 			{
-				nodes[min.y - 1][min.x - 1].second.g = 14 + nodes[min.y][min.x].second.g;
-				nodes[min.y - 1][min.x - 1].second.parent.x = min.x;
-				nodes[min.y - 1][min.x - 1].second.parent.y = min.y;
+				pointTmps[min.y - 1][min.x - 1].second.g = 14 + pointTmps[min.y][min.x].second.g;
+				pointTmps[min.y - 1][min.x - 1].second.parent.x = min.x;
+				pointTmps[min.y - 1][min.x - 1].second.parent.y = min.y;
 			}
 		}
 
 		//좌하
 		if (min.x != 0 && min.y != HeightNode - 1)
 		{
-			if (nodes[min.y + 1][min.x].second.wall == true &&
-				nodes[min.y][min.x - 1].second.wall == true)
+			if (pointTmps[min.y + 1][min.x].second.wall == true &&
+				pointTmps[min.y][min.x - 1].second.wall == true)
 			{
 				//
 			}
-			else if (nodes[min.y + 1][min.x - 1].second.g > 14 + nodes[min.y][min.x].second.g)
+			else if (pointTmps[min.y + 1][min.x - 1].second.g > 14 + pointTmps[min.y][min.x].second.g)
 			{
-				nodes[min.y + 1][min.x - 1].second.g = 14 + nodes[min.y][min.x].second.g;
-				nodes[min.y + 1][min.x - 1].second.parent.x = min.x;
-				nodes[min.y + 1][min.x - 1].second.parent.y = min.y;
+				pointTmps[min.y + 1][min.x - 1].second.g = 14 + pointTmps[min.y][min.x].second.g;
+				pointTmps[min.y + 1][min.x - 1].second.parent.x = min.x;
+				pointTmps[min.y + 1][min.x - 1].second.parent.y = min.y;
 			}
 		}
 
 		//우상
 		if (min.x != WidthNode - 1 && min.y != 0)
 		{
-			if (nodes[min.y - 1][min.x].second.wall == true &&
-				nodes[min.y][min.x + 1].second.wall == true)
+			if (pointTmps[min.y - 1][min.x].second.wall == true &&
+				pointTmps[min.y][min.x + 1].second.wall == true)
 			{
 				//
 			}
-			else if (nodes[min.y - 1][min.x + 1].second.g > 14 + nodes[min.y][min.x].second.g)
+			else if (pointTmps[min.y - 1][min.x + 1].second.g > 14 + pointTmps[min.y][min.x].second.g)
 			{
-				nodes[min.y - 1][min.x + 1].second.g = 14 + nodes[min.y][min.x].second.g;
-				nodes[min.y - 1][min.x + 1].second.parent.x = min.x;
-				nodes[min.y - 1][min.x + 1].second.parent.y = min.y;
+				pointTmps[min.y - 1][min.x + 1].second.g = 14 + pointTmps[min.y][min.x].second.g;
+				pointTmps[min.y - 1][min.x + 1].second.parent.x = min.x;
+				pointTmps[min.y - 1][min.x + 1].second.parent.y = min.y;
 			}
 		}
 
 		//우하
 		if (min.x != WidthNode - 1 && min.y != HeightNode - 1)
 		{
-			if (nodes[min.y + 1][min.x].second.wall == true &&
-				nodes[min.y][min.x + 1].second.wall == true)
+			if (pointTmps[min.y + 1][min.x].second.wall == true &&
+				pointTmps[min.y][min.x + 1].second.wall == true)
 			{
 				//
 			}
-			else if (nodes[min.y + 1][min.x + 1].second.g > 14 + nodes[min.y][min.x].second.g)
+			else if (pointTmps[min.y + 1][min.x + 1].second.g > 14 + pointTmps[min.y][min.x].second.g)
 			{
-				nodes[min.y + 1][min.x + 1].second.g = 14 + nodes[min.y][min.x].second.g;
-				nodes[min.y + 1][min.x + 1].second.parent.x = min.x;
-				nodes[min.y + 1][min.x + 1].second.parent.y = min.y;
+				pointTmps[min.y + 1][min.x + 1].second.g = 14 + pointTmps[min.y][min.x].second.g;
+				pointTmps[min.y + 1][min.x + 1].second.parent.x = min.x;
+				pointTmps[min.y + 1][min.x + 1].second.parent.y = min.y;
 			}
 		}
 
 		//minF 더이상 검사하지 마라
-		nodes[min.y][min.x].second.close = true;
+		pointTmps[min.y][min.x].second.close = true;
 
 		//길 만들기
-		if (nodes[min.y][min.x].second.goal == true)
+		if (pointTmps[min.y][min.x].second.goal == true)
 		{
 			//검사를 수행한 노드의 위치를 저장
 			POINT tempPoint;
@@ -517,8 +543,8 @@ void NodeHLDCopy::FindPath()
 			while (true)
 			{
 				//부모 노드의 위치를 저장(2)
-				tempPoint2.y = nodes[tempPoint.y][tempPoint.x].second.parent.y;
-				tempPoint2.x = nodes[tempPoint.y][tempPoint.x].second.parent.x;
+				tempPoint2.y = pointTmps[tempPoint.y][tempPoint.x].second.parent.y;
+				tempPoint2.x = pointTmps[tempPoint.y][tempPoint.x].second.parent.x;
 				
 				//검사 대상이었던 노드를 부모로 변경
 				tempPoint.y = tempPoint2.y;
@@ -528,7 +554,7 @@ void NodeHLDCopy::FindPath()
 				
 
 				//시작점 검사 대상에서 제외
-				if (nodes[tempPoint.y][tempPoint.x].second.start == true)
+				if (pointTmps[tempPoint.y][tempPoint.x].second.start == true)
 					break;
 
 				
@@ -545,7 +571,7 @@ void NodeHLDCopy::FindPath()
 					Reset();
 					break;
 				}
-				RectPosition.push_back(nodes[tempPoint.y][tempPoint.x].first->Position());
+				RectPosition.push_back(pointTmps[tempPoint.y][tempPoint.x].first);
 
 			}
 

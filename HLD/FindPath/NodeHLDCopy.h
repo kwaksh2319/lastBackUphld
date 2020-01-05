@@ -29,6 +29,7 @@ private:
     class HLDgrid*grid;
 	Rect* rect;
 	bool bWallCheck;
+	bool bTmpCheck;
 	D3DXVECTOR2 rectSize;
 	D3DXVECTOR2 positions;
 	D3DXVECTOR2 scales;
@@ -36,7 +37,8 @@ private:
 	//pair<class HLDgrid*, tagNodes> nodes[HeightNode][WidthNode];
 	pair<Rect*, tagNodes> nodes[HeightNode][WidthNode];
 	pair<Rect*, tagNodes> tmp;
-	pair<D3DXVECTOR2, tagNodes> pointTmps[HeightNode][WidthNode];
+	//pair<vector<D3DXVECTOR2>, tagNodes> pointTmps[HeightNode][WidthNode];// [HeightNode][WidthNode];
+	pair<D3DXVECTOR2, tagNodes> pointTmps[HeightNode][WidthNode]; 
 	D3DXCOLOR color;
 
 	int startX, startY;
@@ -87,5 +89,6 @@ public:
 	D3DXVECTOR2 SendToPtMoust() { return ptMouse; }
 	void SetWallCheck(bool bCheck) { bWallCheck = bCheck; }
     bool PtInRect(D3DXVECTOR2 rectPose, D3DXVECTOR2 target);
+	
 	void GetRectSize(D3DXVECTOR2 size);
 };

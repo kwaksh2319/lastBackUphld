@@ -10,7 +10,7 @@ private:
 	bool bCheckState;
 	bool bNext;
 	D3DXVECTOR2 getBackgroundPoint[4];
-
+	D3DXVECTOR2 fileDamge;
 public:
 
 

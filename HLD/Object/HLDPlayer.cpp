@@ -5,7 +5,7 @@
 #include"HLD/Object/HLDAlter.h"
 
 HLDPlayer::HLDPlayer(D3DXVECTOR2 pos)
-	:position(pos),scale(0.6f,0.6f), focusOffset(-410, -400),moveSpeed(100.0f),bCheck(false),swordSpeed(100.0f),bSwordCheck(false),angleSwordSpeed(1.0f),shootWeapon(false),bCheckBackground(false), moveMinSpeed(400.0f), bCheckWall(false), bCheckStage01(false), bCheckBrute(false), bCheckDash(false) 
+	:position(pos),scale(0.6f,0.6f), focusOffset(-410, -400),moveSpeed(100.0f),bCheck(false),swordSpeed(100.0f),bSwordCheck(false),angleSwordSpeed(1.0f),shootWeapon(false),bCheckBackground(false), moveMinSpeed(400.0f), bCheckWall(false), bCheckStage01(false), bCheckBrute(false), bCheckDash(false) , bCheckInven(false)
 {//-410, -400
 	rt = 0.0f;
 
@@ -13,10 +13,11 @@ HLDPlayer::HLDPlayer(D3DXVECTOR2 pos)
 	wstring shaderFile = Shaders + L"Effect.fx";
 	
 	player = new Animation; 
+	
 	interval[0] = 10.0f;
 	interval[1] = 20.0f;
 	interval[2] = 30.0f;
-	
+	//inven = new InventoryHDL(D3DXVECTOR2(-5000.0f, -5000.0f), D3DXVECTOR2(50.0f, 50.0f));
 	slash = new HLDEffect(D3DXVECTOR2(-5000.0f, -5000.0f), D3DXVECTOR2(0.6f,0.6f));
 	sword=new HLDWeapon(D3DXVECTOR2(-5000.0f, -5000.0f), D3DXVECTOR2(0.6f, 0.6f));
 	for (int i = 0; i < 3; i++) {
@@ -150,7 +151,7 @@ HLDPlayer::HLDPlayer(D3DXVECTOR2 pos)
 	player->Position(position);
 	player->Scale(scale);
 	player->Play(3);
-	player->DrawBound(true);
+	//player->DrawBound(true);
 	dir = Direction::EndDown;
 	aDir = AttackDirection::None;
 
@@ -161,7 +162,7 @@ HLDPlayer::~HLDPlayer()
 	for (HLDAlter*alters:alter) {
 		SAFE_DELETE(alters);
 	}
-
+	//SAFE_DELETE(inven);
 	SAFE_DELETE(sword);
 	SAFE_DELETE(slash);
 	
@@ -192,7 +193,7 @@ void HLDPlayer::Update(D3DXMATRIX & V, D3DXMATRIX & P)
 {
 	
 	KeyDirection();
-
+	
 
 	if(bCheckDash){
 	for (int i = 0; i < 3;i++) {
@@ -215,10 +216,10 @@ void HLDPlayer::Update(D3DXMATRIX & V, D3DXMATRIX & P)
 
 void HLDPlayer::Render()
 {
-	ImGui::SliderFloat("rotation", (float*)&rt, -179.9, 179.9);
-	ImGui::LabelText("alterPositon0", "%f,%f", alterPosition[0].x, alterPosition[0].y);
-	ImGui::LabelText("alterPositon1", "%f,%f", alterPosition[1].x, alterPosition[1].y);
-	ImGui::LabelText("alterPositon2", "%f,%f", alterPosition[2].x, alterPosition[2].y);
+	//ImGui::SliderFloat("rotation", (float*)&rt, -179.9, 179.9);
+	//ImGui::LabelText("alterPositon0", "%f,%f", alterPosition[0].x, alterPosition[0].y);
+	//ImGui::LabelText("alterPositon1", "%f,%f", alterPosition[1].x, alterPosition[1].y);
+	//ImGui::LabelText("alterPositon2", "%f,%f", alterPosition[2].x, alterPosition[2].y);
 
 
 	//if(ImGui::LabelText(&rt,))
@@ -229,7 +230,7 @@ void HLDPlayer::Render()
 			alter[i]->Render();
 		}
 	}
-
+	
 	
 	
 	player->Render();
@@ -379,6 +380,9 @@ void HLDPlayer::KeyDirection()
 	static bool bCheckDown = true;
 	static bool bCheckRight = false;
 	static bool bCheckLeft = false;
+	
+	
+
 	if (Key->Press('Z')&& dir !=Direction::Attack && dir != Direction::EndDown&& dir != Direction::EndUp&& dir != Direction::EndRight&& dir != Direction::EndLeft) {
 		moveSpeed = 500.0f;
 		moveMinSpeed = 3000.0f;

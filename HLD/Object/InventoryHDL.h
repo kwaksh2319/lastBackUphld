@@ -1,21 +1,22 @@
 #pragma once
-class HLDTile01{
+#include"HLD/Object/HLDPlayer.h"
+class InventoryHDL : HLDPlayer {
 
 private:
 	D3DXVECTOR2 position;
 	D3DXVECTOR2 scale;
-	Animation *tile01;
-	bool bCheckSearch;
-	bool bTestSearch;
-
+	bool bCheck;
+	Rect*inventory[4][3];
+	
+	vector<class Sprite*> itemMoney;
 public:
-	HLDTile01(D3DXVECTOR2 pos);
-	~HLDTile01();
-
-	void Position(float x,float y);
+	InventoryHDL(D3DXVECTOR2 pos, D3DXVECTOR2 size);
+	~InventoryHDL();
+	
+	
+	void Position(float x, float y);
 	void Position(D3DXVECTOR2 val);
 	D3DXVECTOR2 Position() { return position; }
-
 
 	void Scale(float x, float y);
 	void Scale(D3DXVECTOR2 val);
@@ -23,8 +24,9 @@ public:
 
 	void Update(D3DXMATRIX &V, D3DXMATRIX &P);
 	void Render();
-	void GetSearchRange(bool val);
-	Sprite*GetSprite();
+
+	void SetSprite(Sprite * data);
+
 
 
 };

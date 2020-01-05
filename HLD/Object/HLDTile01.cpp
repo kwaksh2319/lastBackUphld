@@ -2,7 +2,7 @@
 #include"HLDTile01.h"
 
 HLDTile01::HLDTile01(D3DXVECTOR2 pos)
-	:position(pos),bCheckSearch(false)
+	:position(pos),bCheckSearch(false), bTestSearch(false)
 {
 	wstring textureFile = Textures + L"./HDL/HyperLightDrifter_sprite.png";
 	wstring shaderFile = Shaders + L"Effect.fx";
@@ -34,7 +34,7 @@ HLDTile01::HLDTile01(D3DXVECTOR2 pos)
 	tile01->Scale(scale);
 	//tile01->Position(position);
 	tile01->Play(0);
-	tile01->DrawBoundStopRange(true);
+	//tile01->DrawBoundStopRange(true);
 }
 
 HLDTile01::~HLDTile01()
@@ -82,9 +82,10 @@ void HLDTile01::Update(D3DXMATRIX & V, D3DXMATRIX & P)
 
 void HLDTile01::Render()
 {
-	if (bCheckSearch) {
+	if (bCheckSearch|| bTestSearch) {
 		tile01->Render();
 	}
+	ImGui::Checkbox("RenderTileSee", &bTestSearch);
 }
 
 void HLDTile01::GetSearchRange(bool val)

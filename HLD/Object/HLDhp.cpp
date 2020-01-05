@@ -5,7 +5,7 @@ HLDhp::HLDhp()
 {
 	wstring textureFile = Textures + L"./HDL/HpBar.png";
 	wstring shaderFile = Shaders + L"Effect.fx";
-	hp = new Sprite(textureFile, shaderFile, 40, 38, 45, 105);
+	hp = new Sprite(textureFile, shaderFile, 40, 38, 105,45);
 	hpBar = new Sprite(textureFile, shaderFile, 32, 50, 114, 60);
 
 }
@@ -78,6 +78,7 @@ void HLDhp::Update(D3DXMATRIX & V, D3DXMATRIX & P)
 
 void HLDhp::Render()
 {
-	hp->Render();
+
 	hpBar->Render();
+	hp->Render();
 }

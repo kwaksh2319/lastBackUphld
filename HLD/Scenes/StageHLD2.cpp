@@ -6,7 +6,7 @@
 #include"./HLD/Object/HLDBoss.h"
 
 StageHLD2::StageHLD2(SceneValues * values)
-	:Scene(values), bCheckState(false)
+	:Scene(values), bCheckState(false),fileDamge(0.0f,0.0f)
 {
 
 	wstring textureFile = Textures + L"./HDL/HDL_Background_Titan_Parallax.png";
@@ -22,6 +22,7 @@ StageHLD2::StageHLD2(SceneValues * values)
 	values->MainCamera = new Following(player);
 	//background->Scale(2.0f, 2.0f);
 	background->DrawBound(true);
+	
 }
 
 StageHLD2::~StageHLD2()
@@ -50,10 +51,22 @@ void StageHLD2::Update()
 
 	player->GetBackgroundData(background->TextureSize(), background->Position());
 	player->GetBackgroundCollision(Sprite::AabbBackgroundRange(background, player->GetSprite()));
-	player->GetCollision(Sprite::Aabb(player->GetSprite(),boss->GetSprite()));
-	//boss->GetHpBarPoint(player->cameraPosHp());
+	
+
+
+	
+	player->GetCollision(Sprite::Aabb(player->GetSprite(),boss->GetSprite())|| Sprite::Aabb(player->GetSprite(),boss->GetLaserSprite())||boss->SetPlayerSpirte(player->GetSprite()));
+	boss->GetSlashSpirte(player->GetSlash());
+	boss->GetHpBarPoint(player->cameraPosHp());
+	boss->GetHpPoint(player->cameraPosHp());
+	
 	boss->GetCollisionSword(Sprite::Aabb(boss->GetSprite(),player->GetSword()));
 	boss->GetCollisionSlash(Sprite::Aabb(boss->GetSprite(), player->GetSlash()));
+	
+	
+	
+	
+	
 	boss->GetPlayerPoint(player->Position());
 	boss->GetBackgroundPoint(getBackgroundPoint);
 	
@@ -73,7 +86,7 @@ void StageHLD2::Render()
 	background->Render();
 	boss->Render();
 	player->Render();
-	ImGui::LabelText("cameraPos", "%f,%f",values->MainCamera->Position().x, values->MainCamera->Position().y);
+	//ImGui::LabelText("cameraPos", "%f,%f",values->MainCamera->Position().x, values->MainCamera->Position().y);
 
 }
 

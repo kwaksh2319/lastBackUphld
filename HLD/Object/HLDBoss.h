@@ -1,5 +1,5 @@
 #pragma once
-enum class State{ Idle ,Appear, ReadyCollision, OnCollision,OffCollsion,EndCollision,CastShot,Laser,Disappear
+enum class State{ Idle ,Appear, ReadyCollision, OnCollision,OffCollsion,EndCollision,CastShot,Laser,Disappear ,Death
 };
 class HLDBoss {
 	
@@ -40,9 +40,16 @@ private:
 	int castCount2;
 	bool bCheckBullet2;
 	float bulletTime;
+	float bossTime;
+	float damageScale;
 	bool bCheckCollisionSword;
 	bool bCheckCollisionSlash;
+	bool bRenderBoss;
 	D3DXVECTOR2 hpBarPoint;
+	D3DXVECTOR2 hpPoint;
+	D3DXVECTOR2 tmpHpPoint;
+	float damage;
+	
 	Sprite*tmpBackg;
 public:
 
@@ -69,7 +76,14 @@ public:
 	void GetCollisionSword(bool val);
 	void GetCollisionSlash(bool val);
 	void GetHpBarPoint(D3DXVECTOR2 val);
+	void GetHpPoint(D3DXVECTOR2 val);
+	void GetHpPoints(D3DXVECTOR2 val);
+	
+	
 	Sprite*GetSprite();
+	bool SetPlayerSpirte(Sprite*val);
+	void GetSlashSpirte(Sprite*val);
+	Sprite* GetLaserSprite();
 	
 	void Pattern();
 	void Cast();

@@ -26,8 +26,8 @@ HLDBrute::HLDBrute(D3DXVECTOR2 pos)
 	brute->Position(position);
 	brute->Scale(scale);
 	brute->Play(0);
-	brute->DrawBound(true);
-	brute->DrawBoundRange(true);
+	//brute->DrawBound(true);
+	//brute->DrawBoundRange(true);
 
 }
 
@@ -97,7 +97,7 @@ Sprite * HLDBrute::GetSprite()
 void HLDBrute::BFSUpdate()
 {
 	float worldTime = Time::Delta();
-	static float MoveMonster = 100;
+	static float MoveMonster = 10;
 	static int countNum = 1;
 	static bool bCheckM = false;
 	static bool bCheckS = false;

@@ -20,7 +20,7 @@ HLDEffect::HLDEffect(D3DXVECTOR2 pos, D3DXVECTOR2 size)
 	}
 	effect->Position(position);
 	effect->Scale(scale);
-	effect->DrawBound(true);
+//	effect->DrawBound(true);
 
 	effect->Play(0);
 

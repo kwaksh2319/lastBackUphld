@@ -18,12 +18,13 @@
 #include "./Viewer/Following.h"
 #include"./HLD/FindPath/BFSNodePathHLD.h"
 #include"./HLD/FindPath/NodeHLDCopy.h"
-
+#include"./HLD/FindPath/BFSNodePathHLDCopy.h"
+#include"./HLD/Object/InventoryHDL.h"
 
 
 #define InPilar position.x < pilar[i]->Position().x+10.0f&& position.x>pilar[i]->Position().x-10.0f&& position.y>pilar[i]->Position().y-10.0f&& position.y < pilar[i]->Position().y +10.0f
 #define InCrystal position.x < crystal[i]->Position().x+10.0f&& position.x>crystal[i]->Position().x-10.0f&& position.y>crystal[i]->Position().y-10.0f&& position.y < crystal[i]->Position().y +10.0f
-#define InStreetLamp position.x < streetLamp[i]->Position().x+10.0f&& position.x>streetLamp[i]->Position().x-10.0f&& position.y>streetLamp[i]->Position().y-10.0f&& position.y < streetLamp[i]->Position().y +10.0f
+#define InStreetLamp position.x < streetLamp[i]->Position().x+30.0f&& position.x>streetLamp[i]->Position().x-30.0f&& position.y>streetLamp[i]->Position().y-30.0f&& position.y < streetLamp[i]->Position().y +30.0f
 #define InTile01 position.x < tile01[i]->Position().x+10.0f&& position.x>tile01[i]->Position().x-10.0f&& position.y>tile01[i]->Position().y-10.0f&& position.y < tile01[i]->Position().y +10.0f
 #define InTile02 position.x < tile02[i]->Position().x+10.0f&& position.x>tile02[i]->Position().x-10.0f&& position.y>tile02[i]->Position().y-10.0f&& position.y < tile02[i]->Position().y +10.0f
 #define InRilfMan position.x < rilfMan[i]->Position().x+10.0f&& position.x>rilfMan[i]->Position().x-10.0f&& position.y>rilfMan[i]->Position().y-10.0f&& position.y < rilfMan[i]->Position().y +10.0f
@@ -37,14 +38,15 @@ Stage1HLD::Stage1HLD(SceneValues * values)
 
 	background = new Sprite(textureFile, shaderFile);
 	player = new HLDPlayer(D3DXVECTOR2(0.0f, -200));//-10, -150
-	monster = new AstarMonster(D3DXVECTOR2(227, 108), D3DXVECTOR2(3, 3));
+	inven = new InventoryHDL(D3DXVECTOR2(227, 108), D3DXVECTOR2(50.0f, 50.0f));
+	
 	
 	//HDL_Background_Titan_Parallax
 	//HDLbackground_Green
 	playerRect = player->GetSprite();
 	
-
-	monsterRect = monster->GetSprite();
+	
+	
 
 	//float tempX = monster->Scale().x*monsterRect->TextureSize().x;
 	//float tempY = monster->Scale().y*monsterRect->TextureSize().y;
@@ -60,8 +62,10 @@ Stage1HLD::Stage1HLD(SceneValues * values)
 	massSizeBackground = D3DXVECTOR2(tempXBack, tempYBack);
 	//node = new NodeHLD(player->Position(), massSize);
 	//background->Position()
-	nodeTmp = new NodeHLDCopy(background->Position(),  massSize, massSizeBackground);
-	bfs = new BFSNodePathHLD(monster->Position(), massSize);
+	//background->Position()
+	nodeTmp = new NodeHLDCopy(D3DXVECTOR2(-431.0f,-480.0f),  massSize, massSizeBackground);
+	//bfs = new BFSNodePathHLD(monster->Position(), massSize);
+	bfs = new BFSNodePathHLDCopy(player->Position(), massSizeBackground,massSize);
 	//values->MainCamera = new FreeCamera;
 	SAFE_DELETE(values->MainCamera);
 	values->MainCamera = new Following(player);
@@ -81,8 +85,9 @@ Stage1HLD::~Stage1HLD()
 {
 	SAFE_DELETE(values->MainCamera);
 	SAFE_DELETE(background);
+	SAFE_DELETE(inven);
 	SAFE_DELETE(player);
-	SAFE_DELETE(monster);
+	
 	SAFE_DELETE(bfs);
 	SAFE_DELETE(nodeTmp);
 	//SAFE_DELETE(node);
@@ -133,14 +138,6 @@ void Stage1HLD::Update()
 
 		//몬스터 마그마 충돌 검사
 
-		for (HLDPilar*pilars : pilar) {
-			if (Sprite::Aabb(monster->GetSprite(), pilars->GetSprite())) {
-				monster->Collision(true);
-				break;
-			}
-			else
-				monster->Collision(false);
-		}
 
 
 		mouse = Mouse->Position();
@@ -180,7 +177,8 @@ void Stage1HLD::Update()
 		CheckSlashRilfMan();
 		CheckPlayerBullet();
 		CheckTile01();
-
+		CheckStreetLamp();
+		CollisionCrystal();
 		//=bfs->GetBFSPosition();
 
 		background->Update(V, P);
@@ -213,17 +211,18 @@ void Stage1HLD::Update()
 
 
 
-
+		
 		player->Position(-10, -150);
+		inven->Position(player->Position().x+100.0f, player->Position().y+100.0f);
 		player->Update(V, P);
-
+		inven->Update(V, P);
 		//monster->GetWay(node->SetWay());
 
 		//monster->GetWay(bfs->GetBFSPosition());
 
 
 
-		monster->Update(V, P);
+		
 
 		//node->Update(V, P);
 		for (NodeHLDCopy*astarRilfManes : astarRilfMan) {
@@ -245,7 +244,7 @@ void Stage1HLD::Render()
 	RenderImGui();
 	RenderDebbuging();
 	RenderImGuiSaveLoad();
-
+	
 
 	background->Render();
 	//node->Render();
@@ -285,7 +284,8 @@ void Stage1HLD::Render()
 		brutes->Render();
 
 	player->Render();
-	monster->Render();
+	inven->Render();
+	
 
 
 
@@ -527,6 +527,28 @@ void Stage1HLD::CheckPlayerBullet()
 
 }
 
+void Stage1HLD::CheckStreetLamp()
+{
+	for (HLDStreetLamp*streetLamps:streetLamp) {
+		streetLamps->GetRangeCollision(Sprite::AabbRangeBox(streetLamps->GetSprite(), player->GetSprite()));
+	}
+}
+
+void Stage1HLD::CollisionCrystal()
+{
+	for (HLDCrystal*crystals : crystal) {
+		
+		crystals->GetCollision((Sprite::Aabb(player->GetSlash(), crystals->GetSprite()))|| (Sprite::Aabb(player->GetSword(), crystals->GetSprite())));
+		crystals->SearchRange(Sprite::AabbStopBox(player->GetSprite(), crystals->GetSpriteMoney()));
+		crystals->GetPlayerPoint(player->Position());
+		crystals->GetMoneyCollision(Sprite::Aabb(player->GetSprite(), crystals->GetSpriteMoney()));
+		if (Sprite::Aabb(player->GetSprite(), crystals->GetSpriteMoney())) {
+			inven->SetSprite(crystals->GetSpriteMoney());
+		}
+	}
+
+}
+
 void Stage1HLD::CheckTile01()
 {
 
@@ -549,6 +571,7 @@ void Stage1HLD::CheckTile01()
 
 void Stage1HLD::EditPilar()
 {
+	int savePoint=0;
 	if (Mouse->Down(0)) {
 		D3DXVECTOR2 temp = nodeTmp->Position();//node->Position();
 		pilar.push_back(new HLDPilar(temp));
@@ -557,6 +580,29 @@ void Stage1HLD::EditPilar()
 		//player->GetWallCollision(false);
 
 	}
+	
+	if (Mouse->Press(1)) {
+		for (size_t i = 0; i < pilar.size(); i++) {
+			if (InPilar) {
+				
+				
+				pilar[i]->Position(position);
+				
+			}
+		}
+	}else if (Mouse->Up(1)) {
+		for (size_t i = 0; i < pilar.size(); i++) {
+			if (InPilar) {
+				pilarPoint.erase(pilarPoint.begin() + i);
+				savePoint = i;
+			}
+		}
+			pilarPoint.push_back(pilar[savePoint]->Position());
+		
+	}
+	
+
+
 	if (Key->Down(VK_DELETE)) {
 		for (size_t i = 0; i < pilar.size(); i++) {
 			if (InPilar) {
@@ -570,13 +616,40 @@ void Stage1HLD::EditPilar()
 
 void Stage1HLD::EditCrystal()
 {
+	int savePoint=0;
 	if (Mouse->Down(0)) {
 		D3DXVECTOR2 temp = nodeTmp->Position();//node->Position();
 		crystal.push_back(new HLDCrystal(temp));
 		crystalPoint.push_back(temp);
 		bCollisionCrystal.push_back(false);
 
-	}if (Key->Down(VK_DELETE)) {
+	}
+	
+	
+	if (Mouse->Press(1)) {
+		for (size_t i = 0; i < crystal.size(); i++) {
+			if (InCrystal) {
+
+
+				crystal[i]->Position(position);
+
+			}
+		}
+	}
+	else if (Mouse->Up(1)) {
+		for (size_t i = 0; i < crystal.size(); i++) {
+			if (InCrystal) {
+				crystalPoint.erase(crystalPoint.begin() + i);
+				savePoint = i;
+			}
+		}
+		crystalPoint.push_back(crystal[savePoint]->Position());
+
+	}
+	
+	
+	
+	if (Key->Down(VK_DELETE)) {
 		for (size_t i = 0; i < crystal.size(); i++) {
 			if (InCrystal) {
 
@@ -590,13 +663,45 @@ void Stage1HLD::EditCrystal()
 
 void Stage1HLD::EditstreetLamp()
 {
+	int savePoint = 0;
 	if (Mouse->Down(0)) {
 		D3DXVECTOR2 temp = nodeTmp->Position();//node->Position();
 		streetLamp.push_back(new HLDStreetLamp(temp));
 		streetLampPoint.push_back(temp);
 		bCollisionStreetLamp.push_back(false);
 
-	}if (Key->Down(VK_DELETE)) {
+	}
+	
+
+	if (Mouse->Press(1)) {
+		for (size_t i = 0; i < streetLamp.size(); i++) {
+			if (InStreetLamp) {
+
+
+				streetLamp[i]->Position(position);
+
+			}
+		}
+	}
+	else if (Mouse->Up(1)) {
+
+		for (size_t i = 0; i < streetLamp.size(); i++) {
+			if (InStreetLamp) {
+
+				
+				streetLampPoint.erase(streetLampPoint.begin() + i);
+				savePoint = i;
+			}
+		}
+	
+		streetLampPoint.push_back(streetLamp[savePoint]->Position());
+
+	}
+	
+	
+
+	
+	if (Key->Down(VK_DELETE)) {
 		for (size_t i = 0; i < streetLamp.size(); i++) {
 			if (InStreetLamp) {
 
@@ -609,13 +714,45 @@ void Stage1HLD::EditstreetLamp()
 
 void Stage1HLD::EditTile01()
 {
+
+	int savePoint = 0;
 	if (Mouse->Down(0)) {
 		D3DXVECTOR2 temp = nodeTmp->Position();//node->Position();
 		tile01.push_back(new HLDTile01(temp));
 		tile01Point.push_back(temp);
 
 
-	}if (Key->Down(VK_DELETE)) {
+	}
+	
+	
+
+
+	if (Mouse->Press(1)) {
+		for (size_t i = 0; i < tile01.size(); i++) {
+			if (InTile01) {
+
+
+				tile01[i]->Position(position);
+
+			}
+		}
+	}
+	else if (Mouse->Up(1)) {
+		for (size_t i = 0; i < tile01.size(); i++) {
+			if (InTile01) {
+				tile01Point.erase(tile01Point.begin() + i);
+				savePoint = i;
+			}
+		}
+		tile01Point.push_back(tile01[savePoint]->Position());
+
+	}
+
+	
+	
+	
+	
+	if (Key->Down(VK_DELETE)) {
 		for (size_t i = 0; i < tile01.size(); i++) {
 			if (InTile01) {
 
@@ -631,13 +768,44 @@ void Stage1HLD::EditTile01()
 
 void Stage1HLD::EditTile02()
 {
+	int savePoint = 0;
 	if(Mouse->Down(0)) {
 		D3DXVECTOR2 temp = nodeTmp->Position();//node->Position();
 		tile02.push_back(new HLDTile02(temp));
 		tile02Point.push_back(temp);
 
 
-	}if (Key->Down(VK_DELETE)) {
+	}
+	
+
+
+	if (Mouse->Press(1)) {
+		for (size_t i = 0; i < tile02.size(); i++) {
+			if (InTile02) {
+
+
+				tile02[i]->Position(position);
+
+			}
+		}
+	}
+	else if (Mouse->Up(1)) {
+		for (size_t i = 0; i < tile02.size(); i++) {
+			if (InTile02) {
+				tile02Point.erase(tile02Point.begin() + i);
+				savePoint = i;
+			}
+		}
+		tile02Point.push_back(tile02[savePoint]->Position());
+
+	}
+
+	
+	
+	
+	
+	
+	if (Key->Down(VK_DELETE)) {
 		for (size_t i = 0; i < tile02.size(); i++) {
 			if (InTile02) {
 
@@ -650,17 +818,18 @@ void Stage1HLD::EditTile02()
 
 void Stage1HLD::EditRilfMan()
 {
+	int savePoint = 0;
 	
 	if (Mouse->Down(0)) {
 		
-		D3DXVECTOR2 temp;
-		temp = Mouse->Position();
-		temp.x = temp.x - (float)Width*0.5f;
-		temp.y = (temp.y - (float)Height*0.5f)*-1.0f;
-		D3DXVECTOR2 cameraPos = values->MainCamera->Position();
+		//D3DXVECTOR2 temp;
+		//temp = Mouse->Position();
+		//temp.x = temp.x - (float)Width*0.5f;
+		//temp.y = (temp.y - (float)Height*0.5f)*-1.0f;
+		//D3DXVECTOR2 cameraPos = values->MainCamera->Position();
 		
-		temp = cameraPos + temp;
-		
+		//temp = cameraPos + temp;
+		D3DXVECTOR2 temp = nodeTmp->Position(); //node->Position();
 		rilfMan.push_back(new HLDRilfMan(temp));
 		rilfManPoint.push_back(temp);
 		bRangeRilfMan.push_back(false);
@@ -672,7 +841,36 @@ void Stage1HLD::EditRilfMan()
 		
 		
 
-	}if (Key->Down(VK_DELETE)) {
+	}
+	
+
+
+	if (Mouse->Press(1)) {
+		for (size_t i = 0; i < rilfMan.size(); i++) {
+			if (InRilfMan) {
+
+
+				rilfMan[i]->Position(position);
+
+			}
+		}
+	}
+	else if (Mouse->Up(1)) {
+		for (size_t i = 0; i < rilfMan.size(); i++) {
+			if (InRilfMan) {
+				rilfManPoint.erase(rilfManPoint.begin() + i);
+				savePoint = i;
+			}
+		}
+		rilfManPoint.push_back(rilfMan[savePoint]->Position());
+
+	}
+
+	
+	
+	
+	
+	if (Key->Down(VK_DELETE)) {
 		for (size_t i = 0; i < rilfMan.size(); i++) {
 			if (InRilfMan) {
 
@@ -693,6 +891,7 @@ void Stage1HLD::EditRilfMan()
 
 void Stage1HLD::EditBrute()
 {
+	int savePoint = 0;
 	if (Mouse->Down(0)) {
 		nodeTmp->GetStartPos(position);
 		nodeTmp->GetGoalPos(player->Position());
@@ -703,6 +902,36 @@ void Stage1HLD::EditBrute()
 		brutePoint.push_back(temp);
 		bRangeBrute.push_back(false);
 	}
+
+
+
+	if (Mouse->Press(1)) {
+		for (size_t i = 0; i < brute.size(); i++) {
+			if (InBrute) {
+
+
+				brute[i]->Position(position);
+
+			}
+		}
+	}
+	else if (Mouse->Up(1)) {
+		for (size_t i = 0; i < brute.size(); i++) {
+			if (InBrute) {
+				brutePoint.erase(brutePoint.begin() + i);
+				savePoint = i;
+			}
+		}
+		brutePoint.push_back(brute[savePoint]->Position());
+
+	}
+
+
+
+
+
+
+
 	if (Key->Down(VK_DELETE)) {
 		for (size_t i = 0; i < brute.size(); i++) {
 			if (InBrute) {
@@ -724,7 +953,7 @@ void Stage1HLD::RenderImGui()
 
 
 		static int combo_item = 0;
-		bool valueChanged = ImGui::Combo("item", &combo_item, "None\0Pilar\0Crystal\0StreetLamp\0Tile01\0Tile02\0RilfMan\0Brute\0BFS\0Astar\0Wall\0\0");
+		bool valueChanged = ImGui::Combo("item", &combo_item, "None\0Pilar\0Crystal\0StreetLamp\0Tile01\0Portal\0RilfMan\0Brute\0BFS\0Astar\0Wall\0\0");
 		if (combo_item == 1) {
 			RenderImGuiPilar();
 		}
@@ -771,10 +1000,10 @@ void Stage1HLD::RenderDebbuging()
 {
 	ImGui::Begin("Debbuging");
 	{
-		ImGui::LabelText("Collision", "%d", monster->Collision() ? 1 : 0);
+	
 		ImGui::LabelText("Img Button", "%d", bButton ? 1 : 0);
-
-
+		//for(int i=0;i<rilfMan.size();i++ ){
+		
 	}
 	ImGui::End();
 
@@ -869,13 +1098,16 @@ void Stage1HLD::RenderImGuiTile01()
 	if (bButtonTile01==true&& hovering == false) {
 		EditTile01();
 	}//save 버튼 load 버튼 
+	
+
+
 }
 
 void Stage1HLD::RenderImGuiTile02()
 {
 	bool hovering = ImGui::GetIO().WantCaptureMouse;
 
-	if (ImGui::Button("create Tile02")) {
+	if (ImGui::Button("create Portal")) {
 
 		bButtonTile02 = !bButtonTile02;
 		bButtonTile01 = false;
@@ -1070,20 +1302,20 @@ void Stage1HLD::RenderSaveLoadImGuiTile01()
 
 void Stage1HLD::RenderSaveLoadImGuiTile02()
 {
-	if (ImGui::Button("Save Tile02") == true && tile02Point.size() > 0) {
+	if (ImGui::Button("Save Portal") == true && tile02Point.size() > 0) {
 		FileManger::SetMarker(tile02Point);
-		FileManger::Save(L"tile02Point.bin");
+		FileManger::Save(L"Portal.bin");
 	}
 	ImGui::SameLine();
 
-	if (ImGui::Button("Load  Tile02") == true) {
+	if (ImGui::Button("Load  Portal") == true) {
 		for (size_t i = 0; i < tile02.size(); i++)
 			SAFE_DELETE(tile02[i]);
 
 		tile02.clear();
 		tile02Point.clear();
 
-		FileManger::Load(L"tile02Point.bin");
+		FileManger::Load(L"Portal.bin");
 		tile02Point = FileManger::GetMarker();
 
 		for (size_t i = 0; i < tile02Point.size(); i++)
